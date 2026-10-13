@@ -1,0 +1,16 @@
+node_modules
+.next
+out
+.env*
+!.env.example
+/portfolio-deploy-*
+/portfolio-docker-*
+/deploy/portfolio/web/
+
+# Local analysis and working notes
+/desktop-project-analysis.md
+/feature-rebuild-plan.md
+/mini_mes_side_project_plan.md
+/portfolio-direction-notes.md
+/portfolio-work-journal.md
+/prompt/
