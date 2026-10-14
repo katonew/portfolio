@@ -44,7 +44,7 @@ export default function Home() {
 
   return (
     <main className="portfolio-home">
-      <section className="document-section">
+      <section className="document-section intro-section">
         <div className="container hero-layout">
           <div className="hero-copy-block">
             <p className="eyebrow">{profile.name} · {profile.years} 웹 개발자</p>
@@ -79,7 +79,7 @@ export default function Home() {
 
       <div className="home-band projects-band">
         <div className="container">
-          <Section id="selected-projects" title="대표 프로젝트" description="실제 업무에서 맡았던 시스템과 해결했던 핵심 문제입니다.">
+          <Section id="selected-projects" eyebrow="SELECTED WORK" title="대표 프로젝트" description="실제 업무에서 맡았던 시스템과 해결했던 핵심 문제입니다.">
             <div className="featured-projects">
               {featuredProjects.map((project) => (
                 <article className={`featured-project${project.slug === "enterprise-cms-erp" ? " featured-project-primary" : ""}`} key={project.slug}>
@@ -225,7 +225,7 @@ export default function Home() {
                 <a className="text-link" href={`tel:${profile.phone.replace(/-/g, "")}`}>{profile.phone}</a>
               </div>
               <a className="profile-contact-qr" href="/contact.vcf" download>
-                <Image src="/contact-qr.png" alt="권태형 연락처 저장용 QR 코드" width={120} height={120} />
+                <Image src="/contact-qr.png" alt="권태형 연락처 저장용 QR 코드" width={120} height={120} loading="eager" />
                 <span>연락처 QR</span>
               </a>
             </div>

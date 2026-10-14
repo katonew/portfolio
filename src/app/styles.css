@@ -7,6 +7,7 @@
   --line: #d8e0ea;
   --primary: #183b67;
   --primary-soft: #edf3fa;
+  --header-height: 68px;
 }
 
 * {
@@ -56,7 +57,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 68px;
+  min-height: var(--header-height);
   gap: 24px;
 }
 
@@ -76,9 +77,27 @@ p {
 }
 
 .nav a:hover,
+.print-button:hover,
 .text-link:hover,
 .related-list a:hover {
   color: var(--primary);
+}
+
+.print-button {
+  min-height: 44px;
+  padding: 8px 0 8px 18px;
+  border: 0;
+  border-left: 1px solid var(--line);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.print-button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
 }
 
 .document-section {
@@ -818,8 +837,50 @@ h4 {
 }
 
 @media (min-width: 861px) {
+  .portfolio-home .intro-section {
+    display: grid;
+    align-content: center;
+    min-height: calc(92vh - var(--header-height) - 1px);
+    min-height: calc(92svh - var(--header-height) - 1px);
+  }
+
   .portfolio-home .hero-copy-block h1 {
     white-space: nowrap;
+  }
+}
+
+/* 지원하지 않는 환경에서도 Intro와 본문은 기본 문서 흐름으로 표시합니다. */
+@media screen and (min-width: 861px) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) and (animation-range: exit 0% exit 65%) {
+    .portfolio-home .hero-layout {
+      animation: intro-exit linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 65%;
+    }
+  }
+}
+
+@keyframes intro-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0.88;
+    transform: translateY(-32px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .portfolio-home .hero-layout {
+    animation: none;
+    transition: none;
+    transform: none;
+    opacity: 1;
   }
 }
 
@@ -903,6 +964,12 @@ h4 {
 
 .portfolio-home .projects-band {
   background: var(--bg);
+}
+
+.portfolio-home .projects-band .section-heading .eyebrow {
+  margin-bottom: 12px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
 }
 
 .portfolio-home .section {
@@ -1464,6 +1531,29 @@ h4 {
     padding-bottom: 2px;
   }
 
+  .site-header:has(+ .portfolio-home) {
+    position: static;
+  }
+
+  .site-header:has(+ .portfolio-home) .header-inner {
+    gap: 12px;
+  }
+
+  .site-header:has(+ .portfolio-home) .nav {
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    overflow-x: visible;
+  }
+
+  .site-header:has(+ .portfolio-home) .print-button {
+    padding: 8px 4px;
+    border-left: 0;
+  }
+
+  .portfolio-home .section {
+    scroll-margin-top: 24px;
+  }
+
   .site-header:has(+ .portfolio-home) .nav a {
     display: inline-flex;
     align-items: center;
@@ -1552,6 +1642,353 @@ h4 {
     padding: 20px;
   }
 
+}
+
+/* 홈 포트폴리오만 A4 문서로 출력하며 상세 페이지에는 적용하지 않습니다. */
+@media print {
+  @page portfolio {
+    size: A4;
+    margin: 14mm 16mm;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  body:has(> .portfolio-home) {
+    background: #fff;
+  }
+
+  .site-header:has(+ .portfolio-home),
+  .portfolio-home .featured-project-link,
+  .portfolio-home .portfolio-notice,
+  .print-button {
+    display: none;
+  }
+
+  .portfolio-home {
+    page: portfolio;
+    --bg: #fff;
+    --surface: #fff;
+    --surface-muted: #fff;
+    --text: #172235;
+    --muted: #3b4654;
+    --line: #b9c2cc;
+    --home-title-size: 17pt;
+    --home-statement-size: 13pt;
+    background: #fff;
+    color: var(--text);
+    font-size: 10pt;
+    line-height: 1.5;
+  }
+
+  .portfolio-home,
+  .portfolio-home *,
+  .portfolio-home *::before,
+  .portfolio-home *::after {
+    position: static !important;
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  .portfolio-home .container {
+    width: 100%;
+    max-width: none;
+  }
+
+  .portfolio-home section,
+  .portfolio-home .home-band {
+    background: #fff;
+    color: var(--text);
+  }
+
+  .portfolio-home .intro-section {
+    display: block;
+    min-height: 0;
+    break-inside: avoid-page;
+  }
+
+  .portfolio-home .hero-layout {
+    grid-template-columns: minmax(0, 1fr) 32mm;
+    gap: 9mm;
+    padding: 0 0 6mm;
+    align-items: start;
+  }
+
+  .portfolio-home .hero-copy-block h1 {
+    margin-bottom: 4mm;
+    font-size: 23pt;
+    line-height: 1.25;
+    white-space: normal;
+  }
+
+  .portfolio-home .eyebrow,
+  .portfolio-home .projects-band .section-heading .eyebrow {
+    margin-bottom: 2mm;
+    font-size: 9pt;
+  }
+
+  .portfolio-home .hero-experiences {
+    gap: 3mm;
+    margin-top: 4mm;
+  }
+
+  .portfolio-home .hero-experiences dt {
+    margin-bottom: 1mm;
+    padding-left: 0;
+    font-size: 11pt;
+  }
+
+  .portfolio-home .hero-experiences dd {
+    margin-left: 0;
+    font-size: 10pt;
+  }
+
+  .portfolio-home .hero-experiences dt::before,
+  .portfolio-home .timeline-item::before {
+    display: none;
+  }
+
+  .portfolio-home .profile-photo-frame {
+    width: 32mm;
+    max-width: 32mm;
+  }
+
+  .portfolio-home .experience-summary {
+    padding: 4mm 0;
+    break-inside: avoid-page;
+  }
+
+  .portfolio-home .experience-summary-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 3mm;
+    margin: 0;
+  }
+
+  .portfolio-home .experience-summary-grid div {
+    padding-left: 3mm;
+  }
+
+  .portfolio-home .experience-summary-grid dt {
+    margin-bottom: 1mm;
+    font-size: 11pt;
+  }
+
+  .portfolio-home .experience-summary-grid dd {
+    font-size: 9pt;
+  }
+
+  .portfolio-home .home-band {
+    padding: 7mm 0;
+    border-bottom: 0.25mm solid var(--line);
+  }
+
+  .portfolio-home .section-heading,
+  .portfolio-home .ai-band .section-heading {
+    max-width: none;
+    margin-bottom: 4mm;
+    break-inside: avoid-page;
+    break-after: avoid-page;
+  }
+
+  .portfolio-home h2,
+  .portfolio-home h3,
+  .portfolio-home h4,
+  .portfolio-home .timeline-period,
+  .portfolio-home .timeline-role,
+  .portfolio-home .project-category,
+  .portfolio-home .case-keyword {
+    break-after: avoid-page;
+  }
+
+  .portfolio-home p,
+  .portfolio-home li {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* 페이지 나눔이 필요한 목록은 블록 흐름을 사용합니다. */
+  .portfolio-home .featured-projects,
+  .portfolio-home .featured-project,
+  .portfolio-home .trouble-grid,
+  .portfolio-home .trouble-item,
+  .portfolio-home .ai-usage-layout,
+  .portfolio-home .ai-responsibility-grid,
+  .portfolio-home #career-timeline .career-project-list {
+    display: block;
+  }
+
+  .portfolio-home .featured-project,
+  .portfolio-home .trouble-item {
+    padding: 4mm 0;
+    break-inside: avoid-page;
+  }
+
+  .portfolio-home .featured-project-primary {
+    padding-top: 0;
+  }
+
+  .portfolio-home .featured-project h3,
+  .portfolio-home .case-heading h3,
+  .portfolio-home .timeline-content h3,
+  .portfolio-home .stack-context-item h3 {
+    max-width: none;
+    margin-bottom: 2mm;
+    font-size: 13pt;
+  }
+
+  .portfolio-home .project-category,
+  .portfolio-home .case-keyword {
+    margin-bottom: 2mm;
+    font-size: 9pt;
+  }
+
+  .portfolio-home .project-statement,
+  .portfolio-home .featured-project-primary .project-statement,
+  .portfolio-home .case-conclusion,
+  .portfolio-home .ai-statement {
+    margin-bottom: 3mm;
+    font-size: 13pt;
+  }
+
+  .portfolio-home .project-message,
+  .portfolio-home .featured-project-primary .project-message {
+    margin-top: 3mm;
+  }
+
+  .portfolio-home .section-description,
+  .portfolio-home .featured-summary,
+  .portfolio-home .case-description,
+  .portfolio-home .career-summary,
+  .portfolio-home .ai-responsibility-grid ul,
+  .portfolio-home .stack-context-item ul {
+    max-width: none;
+    font-size: 10pt;
+    line-height: 1.5;
+  }
+
+  .portfolio-home .featured-summary {
+    margin: 2mm 0 3mm;
+  }
+
+  .portfolio-home .case-flow {
+    gap: 2mm 3mm;
+    margin-bottom: 3mm;
+    font-size: 10pt;
+  }
+
+  .portfolio-home .project-evidence {
+    margin-bottom: 3mm;
+    padding: 2mm 0;
+    font-size: 9pt;
+  }
+
+  .portfolio-home .ai-responsibility-grid > div {
+    margin-top: 3mm;
+    break-inside: avoid-page;
+  }
+
+  .portfolio-home .ai-responsibility-grid h3,
+  .portfolio-home #career-timeline .career-project-list h4 {
+    margin-bottom: 1mm;
+    font-size: 11pt;
+  }
+
+  .portfolio-home .ai-case-note {
+    margin-top: 4mm;
+    padding-top: 3mm;
+    border-color: var(--line);
+    break-inside: avoid-page;
+  }
+
+  .portfolio-home .project-stack,
+  .portfolio-home .timeline-period,
+  .portfolio-home .timeline-role,
+  .portfolio-home #career-timeline .career-project-sub,
+  .portfolio-home .ai-case-note,
+  .portfolio-home .ai-tools,
+  .portfolio-home .contact-label {
+    font-size: 9pt;
+  }
+
+  .portfolio-home .timeline-list {
+    margin-left: 0;
+    border-left: 0;
+  }
+
+  /* 회사 단위 묶음을 우선하되 한 페이지보다 길면 일반 문서 흐름에서 나눕니다. */
+  .portfolio-home .timeline-item {
+    max-width: none;
+    padding: 0 0 5mm;
+    break-inside: avoid-page;
+  }
+
+  .portfolio-home .timeline-period,
+  .portfolio-home .timeline-role,
+  .portfolio-home .career-summary {
+    margin-bottom: 2mm;
+  }
+
+  .portfolio-home #career-timeline .career-project-list {
+    margin-top: 3mm;
+  }
+
+  .portfolio-home #career-timeline .career-project-list > li {
+    margin-top: 3mm;
+    break-inside: avoid-page;
+  }
+
+  .portfolio-home .career-band #tech-stack {
+    margin-top: 7mm;
+  }
+
+  .portfolio-home .stack-context-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4mm 8mm;
+  }
+
+  .portfolio-home .stack-context-item {
+    break-inside: avoid-page;
+  }
+
+  .portfolio-home .ai-tools {
+    margin-top: 4mm;
+  }
+
+  .portfolio-home .contact-band {
+    border-bottom: 0;
+    break-inside: avoid-page;
+  }
+
+  .portfolio-home .contact-layout {
+    flex-direction: row;
+    gap: 12mm;
+  }
+
+  .portfolio-home .text-link {
+    min-height: 0;
+    padding: 0;
+  }
+
+  .portfolio-home .profile-caption .text-link {
+    margin: 1mm 0 3mm;
+    font-size: 10pt;
+  }
+
+  .portfolio-home .profile-contact-qr {
+    max-width: none;
+    font-size: 9pt;
+    break-inside: avoid-page;
+  }
+
+  .portfolio-home .profile-contact-qr img {
+    width: 30mm;
+    height: auto;
+  }
 }
 
 /* CMS 상세 전용. 다른 프로젝트와 메인 페이지의 스타일은 유지합니다. */

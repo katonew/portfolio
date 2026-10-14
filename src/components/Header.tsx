@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PrintButton } from "@/components/PrintButton";
 
 export function Header() {
   return (
@@ -14,6 +15,7 @@ export function Header() {
           <Link href="/#career-timeline">경력</Link>
           <Link href="/#tech-stack">기술</Link>
           <Link href="/#contact">연락처</Link>
+          <PrintButton />
         </nav>
       </div>
     </header>
