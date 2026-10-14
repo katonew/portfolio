@@ -1,0 +1,148 @@
+.page {
+  background: var(--surface);
+  padding: 64px 0 96px;
+}
+
+.document {
+  width: min(1080px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.heading {
+  max-width: 680px;
+  margin-bottom: 64px;
+}
+
+.heading h1 {
+  font-size: clamp(32px, 4vw, 46px);
+  margin-bottom: 16px;
+}
+
+.heading p {
+  color: var(--muted);
+  margin-bottom: 0;
+}
+
+.section + .section {
+  margin-top: 72px;
+}
+
+.section h2 {
+  font-size: 22px;
+  margin-bottom: 24px;
+}
+
+.projectList,
+.selectedList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.project {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: 20px 56px;
+  padding: 28px 0;
+  border-top: 1px solid var(--line);
+}
+
+.projectMain {
+  min-width: 0;
+}
+
+.project h3 {
+  font-size: 21px;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.selectedList .project {
+  padding: 32px 0;
+}
+
+.selectedList h3 {
+  font-size: 26px;
+}
+
+.scope {
+  max-width: 66ch;
+  margin-bottom: 0;
+  overflow-wrap: anywhere;
+}
+
+.sub {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.metadata {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  margin: 0;
+  font-size: 13px;
+}
+
+.metadata dt {
+  color: var(--muted);
+}
+
+.metadata dd {
+  margin: 2px 0 0;
+}
+
+.projectFooter {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.stack {
+  min-width: 0;
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.detailLink {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 40px 0 64px;
+  }
+
+  .document {
+    width: calc(100% - 32px);
+  }
+
+  .heading {
+    margin-bottom: 40px;
+  }
+
+  .project {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .metadata {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .projectFooter {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+}

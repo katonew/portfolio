@@ -836,12 +836,32 @@ h4 {
   display: block;
 }
 
-@media (min-width: 861px) {
+@media screen and (min-width: 861px) {
+  .portfolio-home .intro-scene {
+    display: grid;
+    grid-template-rows: minmax(min-content, 1fr) auto;
+    min-height: calc(100vh - var(--header-height) - 1px);
+    min-height: calc(100svh - var(--header-height) - 1px);
+  }
+
   .portfolio-home .intro-section {
     display: grid;
-    align-content: center;
-    min-height: calc(92vh - var(--header-height) - 1px);
-    min-height: calc(92svh - var(--header-height) - 1px);
+    grid-template-rows: minmax(24px, 2fr) auto minmax(24px, 1fr);
+    border-bottom: 0;
+  }
+
+  .portfolio-home .intro-scene .hero-layout {
+    grid-row: 2;
+    padding: 0;
+  }
+
+  .portfolio-home .intro-scene .experience-summary {
+    padding: 24px 0 28px;
+    border-top: 1px solid var(--line);
+  }
+
+  .portfolio-home .intro-scene .experience-summary-grid {
+    margin-block: 0;
   }
 
   .portfolio-home .hero-copy-block h1 {
@@ -1049,6 +1069,112 @@ h4 {
 .portfolio-home .featured-project-link {
   padding-top: 22px;
   margin-top: 0;
+}
+
+.portfolio-home .hero-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.portfolio-home .hero-action {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+  font-size: clamp(18px, 1.6vw, 20px);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.portfolio-home .hero-action-description {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.primary-link,
+.detail-link {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.primary-link {
+  font-size: 20px;
+}
+
+.detail-link {
+  font-size: 16px;
+}
+
+.portfolio-home .primary-link:hover,
+.portfolio-home .primary-link:focus-visible,
+.portfolio-home .detail-link:hover,
+.portfolio-home .detail-link:focus-visible {
+  text-decoration: none;
+}
+
+.primary-link .cta-label,
+.detail-link .cta-label {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+
+.primary-link:hover .cta-label,
+.detail-link:hover .cta-label,
+.primary-link:focus-visible .cta-label,
+.detail-link:focus-visible .cta-label {
+  text-decoration-thickness: 2px;
+}
+
+.cta-arrow {
+  display: inline-block;
+}
+
+.primary-link:focus-visible,
+.detail-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .primary-link .cta-arrow,
+  .detail-link .cta-arrow {
+    transition: transform 180ms ease;
+  }
+
+  .primary-link:hover .cta-arrow,
+  .detail-link:hover .cta-arrow {
+    transform: translateX(3px);
+  }
+}
+
+.portfolio-home .section-next {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  gap: 8px;
+  margin-top: 48px;
+  padding: 32px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.portfolio-home .section-next .text-link {
+  font-size: clamp(22px, 2.2vw, 28px);
+  font-weight: 600;
+}
+
+.portfolio-home .section-next p {
+  max-width: 48ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
 }
 
 .portfolio-home .featured-project .text-link {
@@ -1415,6 +1541,21 @@ h4 {
 }
 
 @media (max-width: 860px) {
+  .portfolio-home .hero-actions,
+  .portfolio-home .section-next {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .portfolio-home .hero-actions {
+    gap: 16px;
+  }
+
+  .portfolio-home .section-next {
+    gap: 8px;
+    margin-top: 40px;
+    padding: 24px 0;
+  }
+
   .portfolio-home .hero-layout {
     gap: 32px;
     padding: 56px 0;

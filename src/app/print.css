@@ -1,0 +1,146 @@
+/* Resume 전용. 기존 Home의 인쇄 규칙은 유지합니다. */
+@media print {
+  @page resume {
+    size: A4;
+    margin: 14mm 16mm;
+  }
+
+  body:has(> .resume-document) {
+    background: #fff;
+  }
+
+  .site-header:has(+ .resume-document),
+  .resume-document .resume-actions {
+    display: none;
+  }
+
+  body .resume-document {
+    page: resume;
+    --resume-body-size: 10pt;
+    --resume-small-size: 9pt;
+    --resume-name-size: 22pt;
+    --resume-section-size: 14pt;
+    --resume-heading-size: 11pt;
+    --muted: #3b4654;
+    --line: #b9c2cc;
+    padding: 0;
+    background: #fff;
+    color: #172235;
+    line-height: 1.5;
+  }
+
+  .resume-document,
+  .resume-document *,
+  .resume-document *::before,
+  .resume-document *::after {
+    position: static !important;
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  body .resume-document > div {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+  }
+
+  .resume-document .resume-profile {
+    grid-template-columns: minmax(0, 1fr) 28mm;
+    gap: 8mm;
+    break-inside: avoid-page;
+  }
+
+  .resume-document .resume-profile > img {
+    width: 28mm;
+    height: auto;
+  }
+
+  body .resume-document h1,
+  body .resume-document h2,
+  body .resume-document h3,
+  body .resume-document h4 {
+    margin-bottom: 2mm;
+    break-after: avoid-page;
+  }
+
+  body .resume-document p {
+    margin-top: 0;
+    margin-bottom: 2mm;
+  }
+
+  body .resume-document a {
+    min-height: 0;
+    padding: 0;
+  }
+
+  .resume-document .resume-section {
+    margin-top: 6mm;
+    padding-top: 4mm;
+  }
+
+  /* 블록 흐름을 사용해 긴 회사 항목은 프로젝트 사이에서 나뉠 수 있게 합니다. */
+  .resume-document .resume-career {
+    display: block;
+    break-inside: avoid-page;
+  }
+
+  .resume-document .resume-career + .resume-career {
+    margin-top: 5mm;
+    padding-top: 4mm;
+  }
+
+  .resume-document .resume-career-heading {
+    margin-bottom: 3mm;
+    break-inside: avoid-page;
+    break-after: avoid-page;
+  }
+
+  .resume-document .resume-project,
+  .resume-document .resume-skill-usage,
+  .resume-document .resume-working-note,
+  .resume-document .resume-contact {
+    break-inside: avoid-page;
+  }
+
+  .resume-document .resume-project + .resume-project {
+    margin-top: 3mm;
+  }
+
+  .resume-document .resume-skill-group,
+  .resume-document .resume-skill-group + .resume-skill-group,
+  .resume-document .resume-responsibilities {
+    display: block;
+    margin-top: 3mm;
+  }
+
+  body .resume-document dl > div + div,
+  .resume-document .resume-working-note + .resume-working-note {
+    margin-top: 2mm;
+  }
+
+  body .resume-document .contact-layout {
+    flex-direction: row;
+    gap: 12mm;
+  }
+
+  body .resume-document .profile-caption .text-link {
+    min-height: 0;
+    margin: 1mm 0 3mm;
+  }
+
+  .resume-document .profile-contact-qr img {
+    width: 30mm;
+    height: auto;
+  }
+
+  .resume-document p,
+  .resume-document li,
+  .resume-document dd {
+    orphans: 3;
+    widows: 3;
+  }
+}

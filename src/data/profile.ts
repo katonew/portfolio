@@ -67,11 +67,14 @@ export type ProjectDetailContent = {
 };
 
 export type TimelineItem = {
+  id: string;
   period: string;
   companyLabel: string;
   title: string;
   role: string;
   projects: {
+    id: string;
+    slug: string | null;
     title: string;
     description: string;
     sub?: string;
@@ -699,12 +702,15 @@ export const portfolioTroubleshooting: PortfolioTroubleshooting[] = [
 
 export const careerTimeline: TimelineItem[] = [
   {
+    id: "content-cms",
     period: "2025.11 - 2026.06",
     companyLabel: "콘텐츠 CMS 개발사",
     title: "사내 CMS / ERP 개발",
     role: "콘텐츠 CMS 개발자",
     projects: [
       {
+        id: "cms-erp",
+        slug: "enterprise-cms-erp",
         title: "CMS / ERP 관리자 시스템",
         description: "계약·매출·비용·정산 업무를 관리하는 사내 관리자 시스템을 개발했습니다.",
         sub: "관리자 화면 · 대량 편집 · 업무 데이터 처리",
@@ -713,27 +719,36 @@ export const careerTimeline: TimelineItem[] = [
     ]
   },
   {
+    id: "inhouse-solution",
     period: "2024.09 - 2025.11",
     companyLabel: "사내 솔루션 개발사",
     title: "사내 솔루션 개발",
     role: "솔루션 개발자",
     projects: [
       {
+        id: "data-platform",
+        slug: "data-market-platform",
         title: "데이터 판매 플랫폼",
         description: "데이터 상품 등록·조회 API와 Vue 화면을 연동하고, 구매 조건 조합을 기준으로 장바구니 중복 처리를 구현했습니다.",
         stack: ["Spring Boot", "JPA", "MySQL", "Vue"]
       },
       {
+        id: "otsuka-maintenance",
+        slug: null,
         title: "한국오츠카제약 사내 시스템 유지보수",
         description: "ASP Classic과 Spring Legacy 기반 기존 시스템의 영업 일정·지출·성과 관련 내부 페이지를 유지보수했습니다.",
         stack: ["ASP Classic", "Spring Legacy"]
       },
       {
+        id: "konkuk-orders",
+        slug: null,
         title: "건국유업 주문 시스템 유지보수",
         description: "PHP CodeIgniter 기반 기존 주문 시스템의 기능 유지보수와 운영 대응을 수행했습니다.",
         stack: ["PHP", "CodeIgniter"]
       },
       {
+        id: "server-migration",
+        slug: null,
         title: "서버 환경 이전 및 배포 자동화",
         description: "Rocky Linux, Docker, GitLab, Jenkins, MySQL 환경을 구성하고 기존 프로젝트를 이전했습니다. GitLab/Jenkins 연동으로 자동 빌드·배포까지 구성했습니다.",
         stack: ["Rocky Linux", "Docker", "GitLab", "Jenkins", "MySQL"]
@@ -741,27 +756,36 @@ export const careerTimeline: TimelineItem[] = [
     ]
   },
   {
+    id: "si-development",
     period: "2023.07 - 2024.09",
     companyLabel: "SI 개발사",
     title: "SI 웹 시스템 개발",
     role: "SI 개발자",
     projects: [
       {
+        id: "property-admin",
+        slug: "real-estate-admin-map",
         title: "부동산 관리자 시스템",
         description: "지도 클릭 좌표와 외부 공간정보를 연동하고, PNU 기준 필지 선택·Polygon 표시·매물 등록 데이터 연결 기능을 개발했습니다.",
         stack: ["Spring Boot", "MySQL", "JavaScript", "지도 API"]
       },
       {
+        id: "newworker",
+        slug: null,
         title: "인크루트 뉴워커",
         description: "일당직 근무자 앱에서 사용하는 API 개발과 기존 관리자 페이지 유지보수를 수행했습니다.",
         stack: ["Spring Boot", "MSSQL"]
       },
       {
+        id: "motrex-erp",
+        slug: null,
         title: "모트렉스 ERP",
         description: "자동차 부품 주문·출고·재고를 관리하는 웹 기능을 개발했습니다.",
         stack: ["JSP", "Spring Legacy", "MSSQL"]
       },
       {
+        id: "shopping-point-integration",
+        slug: null,
         title: "사내 쇼핑몰 포인트 연동",
         description: "기존 사내 쇼핑몰에서 타 업체 포인트를 사용할 수 있도록 외부 API를 연동했습니다.",
         stack: ["Spring Boot", "MySQL"]

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Section } from "@/components/Section";
+import { ContactDetails } from "@/components/ContactDetails";
 import {
   aiDelegatedTasks,
   careerTimeline,
@@ -14,6 +15,13 @@ import {
   selectedProjectSlugs,
   selectedProjectSummaries
 } from "@/data/profile";
+
+// Home은 경력 흐름만 요약하고, 프로젝트별 담당 범위와 기술은 Resume에 유지합니다.
+const careerSummaryById: Record<string, string> = {
+  "content-cms": "계약·매출·비용·정산 관리자 시스템 개발",
+  "inhouse-solution": "데이터 플랫폼 · 레거시 유지보수 · 서버 이전",
+  "si-development": "부동산 · ERP · 외부 API 연동"
+};
 
 function ProjectEvidence({ evidence }: { evidence: (typeof selectedProjectSummaries)[keyof typeof selectedProjectSummaries]["evidence"] }) {
   if (evidence.kind === "comparison") {
@@ -44,38 +52,50 @@ export default function Home() {
 
   return (
     <main className="portfolio-home">
-      <section className="document-section intro-section">
-        <div className="container hero-layout">
-          <div className="hero-copy-block">
-            <p className="eyebrow">{profile.name} · {profile.years} 웹 개발자</p>
-            <h1>{profile.heroHeadline.map((line) => <span key={line}>{line}</span>)}</h1>
-            <dl className="hero-experiences">
-              {profile.heroExperiences.map((item) => (
-                <div key={item.title}>
-                  <dt>{item.title}</dt>
-                  <dd>{item.description}</dd>
-                </div>
-              ))}
-            </dl>
+      <div className="intro-scene">
+        <section className="document-section intro-section">
+          <div className="container hero-layout">
+            <div className="hero-copy-block">
+              <p className="eyebrow">{profile.name} · {profile.years} 웹 개발자</p>
+              <h1>{profile.heroHeadline.map((line) => <span key={line}>{line}</span>)}</h1>
+              <dl className="hero-experiences">
+                {profile.heroExperiences.map((item) => (
+                  <div key={item.title}>
+                    <dt>{item.title}</dt>
+                    <dd>{item.description}</dd>
+                  </div>
+                ))}
+              </dl>
+              <nav className="featured-project-link hero-actions" aria-label="전체 프로젝트와 이력서">
+                <Link className="text-link primary-link hero-action" href="/projects/">
+                  <span className="cta-label">전체 프로젝트 보기 <span className="cta-arrow" aria-hidden="true">↗</span></span>
+                  <span className="hero-action-description">수행한 전체 프로젝트</span>
+                </Link>
+                <Link className="text-link primary-link hero-action" href="/resume/">
+                  <span className="cta-label">이력서 보기 <span className="cta-arrow" aria-hidden="true">↗</span></span>
+                  <span className="hero-action-description">경력 · 기술 · 업무 방식</span>
+                </Link>
+              </nav>
+            </div>
+            <aside className="profile-aside" aria-label="프로필 사진">
+              <div className="profile-photo-frame">
+                <Image src="/profile-photo.png" alt="권태형 프로필 사진" width={280} height={340} priority />
+              </div>
+            </aside>
           </div>
-          <aside className="profile-aside" aria-label="프로필 사진">
-            <div className="profile-photo-frame">
-              <Image src="/profile-photo.png" alt="권태형 프로필 사진" width={280} height={340} priority />
-            </div>
-          </aside>
-        </div>
-      </section>
+        </section>
 
-      <section className="experience-summary" aria-label="경력 요약">
-        <dl className="container experience-summary-grid">
-          {experienceSummary.map((item) => (
-            <div key={item.value}>
-              <dt>{item.value}</dt>
-              <dd>{item.description}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
+        <section className="experience-summary" aria-label="경력 요약">
+          <dl className="container experience-summary-grid">
+            {experienceSummary.map((item) => (
+              <div key={item.value}>
+                <dt>{item.value}</dt>
+                <dd>{item.description}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      </div>
 
       <div className="home-band projects-band">
         <div className="container">
@@ -91,7 +111,9 @@ export default function Home() {
                         <p className="featured-summary">{project.card.description}</p>
                         <p className="project-stack">{project.card.stack.join(" · ")}</p>
                         <div className="featured-project-link">
-                          <Link className="text-link" href={`/projects/${project.slug}`} aria-label={`${project.card.title} 상세 보기`}>프로젝트 상세 →</Link>
+                          <Link className="text-link detail-link" href={`/projects/${project.slug}`} aria-label={`${project.card.title} 상세 보기`}>
+                            <span className="cta-label">프로젝트 상세 <span className="cta-arrow" aria-hidden="true">↗</span></span>
+                          </Link>
                         </div>
                       </div>
                       <div className="project-message">
@@ -112,12 +134,20 @@ export default function Home() {
                       <ProjectEvidence evidence={project.card.evidence} />
                       <p className="project-stack">{project.card.stack.join(" · ")}</p>
                       <div className="featured-project-link">
-                        <Link className="text-link" href={`/projects/${project.slug}`} aria-label={`${project.card.title} 상세 보기`}>프로젝트 상세 →</Link>
+                        <Link className="text-link detail-link" href={`/projects/${project.slug}`} aria-label={`${project.card.title} 상세 보기`}>
+                          <span className="cta-label">프로젝트 상세 <span className="cta-arrow" aria-hidden="true">↗</span></span>
+                        </Link>
                       </div>
                     </>
                   )}
                 </article>
               ))}
+            </div>
+            <div className="featured-project-link section-next">
+              <Link className="text-link primary-link" href="/projects/">
+                <span className="cta-label">전체 프로젝트 보기 <span className="cta-arrow" aria-hidden="true">↗</span></span>
+              </Link>
+              <p>수행한 프로젝트 전체를 한눈에 확인합니다.</p>
             </div>
           </Section>
         </div>
@@ -172,32 +202,28 @@ export default function Home() {
         <div className="container">
           <Section id="career-timeline" title="경력">
             <div className="timeline-list">
-              {careerTimeline.map((item) => (
-                <article className="timeline-item" key={`${item.period}-${item.companyLabel}`}>
-                  <div className="timeline-period">{item.period}</div>
-                  <div className="timeline-content">
-                    <h3>{item.title}</h3>
-                    <p className="timeline-role">{item.companyLabel} · {item.role}</p>
-                    <ul className="career-project-list">
-                      {item.projects.map((project) => (
-                        <li key={project.title}>
-                          <h4>{project.title}</h4>
-                          <p className="career-summary">{project.description}</p>
-                          {project.sub && <p className="career-project-sub">{project.sub}</p>}
-                          <p className="project-stack">
-                            {project.stack.map((tech, index) => (
-                              <span key={tech}>
-                                {index > 0 && " · "}
-                                <span className="career-project-tech">{tech}</span>
-                              </span>
-                            ))}
-                          </p>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </article>
-              ))}
+              {careerTimeline.map((item) => {
+                const summary = careerSummaryById[item.id];
+                if (!summary) {
+                  throw new Error(`Home career summary not found: ${item.id}`);
+                }
+                return (
+                  <article className="timeline-item" key={item.id}>
+                    <div className="timeline-period">{item.period}</div>
+                    <div className="timeline-content">
+                      <h3>{item.title}</h3>
+                      <p className="timeline-role">{item.companyLabel} · {item.role}</p>
+                      <p className="career-summary">{summary}</p>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+            <div className="featured-project-link section-next">
+              <Link className="text-link primary-link" href="/resume/">
+                <span className="cta-label">전체 이력 보기 <span className="cta-arrow" aria-hidden="true">↗</span></span>
+              </Link>
+              <p>회사별 프로젝트 · 사용 기술 · 업무 방식을 확인합니다.</p>
             </div>
           </Section>
           <Section id="tech-stack" title="사용 기술">
@@ -217,18 +243,7 @@ export default function Home() {
       <div className="home-band contact-band">
         <div className="container">
           <Section id="contact" title="연락처">
-            <div className="contact-layout">
-              <div className="profile-caption">
-                <p className="contact-label">이메일</p>
-                <a className="text-link" href={`mailto:${profile.email}`}>{profile.email}</a>
-                <p className="contact-label">전화</p>
-                <a className="text-link" href={`tel:${profile.phone.replace(/-/g, "")}`}>{profile.phone}</a>
-              </div>
-              <a className="profile-contact-qr" href="/contact.vcf" download>
-                <Image src="/contact-qr.png" alt="권태형 연락처 저장용 QR 코드" width={120} height={120} loading="eager" />
-                <span>연락처 QR</span>
-              </a>
-            </div>
+            <ContactDetails />
           </Section>
           <footer className="portfolio-notice">
             <details>

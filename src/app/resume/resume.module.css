@@ -1,0 +1,250 @@
+.page {
+  --resume-body-size: 15px;
+  --resume-small-size: 13px;
+  --resume-name-size: 32px;
+  --resume-section-size: 22px;
+  --resume-heading-size: 17px;
+  background: var(--surface);
+  padding: 48px 0 80px;
+  font-size: var(--resume-body-size);
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.document {
+  width: min(920px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.page h1 {
+  font-size: var(--resume-name-size);
+  margin-bottom: 12px;
+}
+
+.page h2 {
+  font-size: var(--resume-section-size);
+  margin-bottom: 24px;
+}
+
+.page h3,
+.page h4 {
+  font-size: var(--resume-heading-size);
+  margin-bottom: 8px;
+}
+
+.page p {
+  margin-bottom: 12px;
+}
+
+.page a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+}
+
+.page a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.profile {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px;
+  align-items: start;
+  gap: 40px;
+}
+
+.identity {
+  min-width: 0;
+}
+
+.role {
+  color: var(--primary);
+}
+
+.meta,
+.stack {
+  color: var(--muted);
+  font-size: var(--resume-small-size);
+}
+
+.photo {
+  display: block;
+  width: 120px;
+  height: auto;
+  max-width: 100%;
+}
+
+.contactLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  font-style: normal;
+}
+
+.contactLinks a {
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.actions {
+  margin-top: 16px;
+}
+
+.actions :global(.print-button) {
+  border-left: 0;
+  padding-left: 0;
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.section {
+  margin-top: 48px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+
+.career {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+  gap: 36px;
+}
+
+.career + .career {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+
+.careerHeading p:last-child {
+  margin-bottom: 0;
+}
+
+.careerProjects {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.careerProjects li + li {
+  margin-top: 24px;
+}
+
+.careerProjects p:last-child {
+  margin-bottom: 0;
+}
+
+.skillGroup {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 24px;
+}
+
+.skillGroup + .skillGroup {
+  margin-top: 24px;
+}
+
+.skillUsages,
+.principles {
+  margin: 0;
+}
+
+.skillUsages > div + div,
+.principles > div + div {
+  margin-top: 12px;
+}
+
+.skillUsages dt,
+.principles dt {
+  font-weight: 600;
+}
+
+.skillUsages dd,
+.principles dd {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.technologiesOnly {
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+.responsibilities {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+  margin-top: 28px;
+}
+
+.responsibilities ul {
+  padding-left: 18px;
+  margin: 0;
+}
+
+.aiTools {
+  margin-top: 24px;
+  font-size: var(--resume-small-size);
+}
+
+.aiNote {
+  color: var(--muted);
+}
+
+.page :global(.contact-layout) {
+  display: flex;
+  align-items: flex-start;
+  gap: 48px;
+}
+
+.page :global(.profile-caption) {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+.page :global(.contact-label) {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: var(--resume-small-size);
+}
+
+.page :global(.profile-caption .text-link) {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  margin: 0 0 12px;
+  font-size: var(--resume-body-size);
+  font-weight: 400;
+}
+
+.page :global(.profile-contact-qr) {
+  margin: 0;
+  font-size: var(--resume-small-size);
+  flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 32px 0 56px;
+  }
+
+  .document {
+    width: calc(100% - 32px);
+  }
+
+  .profile,
+  .career,
+  .skillGroup,
+  .responsibilities {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .page :global(.contact-layout) {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
