@@ -1,4 +1,4 @@
-/* Resume 전용. 기존 Home의 인쇄 규칙은 유지합니다. */
+/* 공통 인쇄 UI와 Resume 전용 스타일. 기존 Home의 인쇄 규칙은 유지합니다. */
 @media print {
   @page resume {
     size: A4;
@@ -9,7 +9,7 @@
     background: #fff;
   }
 
-  .site-header:has(+ .resume-document),
+  .site-header,
   .resume-document .resume-actions {
     display: none;
   }
