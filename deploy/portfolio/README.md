@@ -33,7 +33,7 @@ SSH로 서버에 접속한 뒤, 왼쪽 SFTP 패널에서 `/home/ubuntu/portfolio
 
 ```bash
 cd /home/ubuntu/portfolio &&
-release="portfolio-deploy-20261008-2" &&
+release="portfolio-deploy-20261014-1" &&
 tar -xzf "${release}.tar.gz" &&
 test -f "${release}/web/index.html" &&
 test -f "${release}/web/projects/enterprise-cms-erp/index.html" &&
