@@ -1,5 +1,10 @@
 # Codex Working Rules
 
+## Portfolio Content Direction
+
+- Project / Problem Solving / Demo / AI Workflow 콘텐츠를 변경하기 전에 `PORTFOLIO-DIRECTION.md`를 확인한다.
+- 해당 문서의 원칙과 충돌하는 방향 변경은 임의로 적용하지 말고 사용자에게 이유를 먼저 보고한다.
+
 ## Usage Optimization
 
 이번 프로젝트에서는 Codex 사용량을 최소화한다.
