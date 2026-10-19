@@ -21,6 +21,7 @@ export function getArchiveProjects() {
       careerId: career.id,
       companyLabel: career.companyLabel,
       period: detail ? detail.period : null,
+      demo: detail?.demo,
       isSelected: selectedProjectSlugs.some((slug) => slug === project.slug)
     };
   }));

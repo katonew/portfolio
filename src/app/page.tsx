@@ -8,13 +8,13 @@ import {
   developerDecisions,
   experienceSummary,
   miniMesAiCase,
-  problemSolvingCases,
   profile,
   projects,
   sanitizedNotice,
   selectedProjectSlugs,
   selectedProjectSummaries
 } from "@/data/profile";
+import { getProjectProblemSolving, getSelectedProblemSolving } from "@/lib/problem-solving";
 
 // Home은 경력 흐름만 요약하고, 프로젝트별 담당 범위와 기술은 Resume에 유지합니다.
 const careerSummaryById: Record<string, string> = {
@@ -24,14 +24,6 @@ const careerSummaryById: Record<string, string> = {
 };
 
 function ProjectEvidence({ evidence }: { evidence: (typeof selectedProjectSummaries)[keyof typeof selectedProjectSummaries]["evidence"] }) {
-  if (evidence.kind === "comparison") {
-    return (
-      <dl className="project-evidence project-evidence-comparison" aria-label="중복 판별 기준 비교">
-        <div><dt>{evidence.before}</dt><dd>{evidence.after}</dd></div>
-      </dl>
-    );
-  }
-
   return (
     <ol className="case-flow project-evidence" aria-label="프로젝트 핵심 처리 흐름">
       {evidence.steps.map((step) => <li key={step}>{step}</li>)}
@@ -48,7 +40,8 @@ export default function Home() {
     return { ...project, card: selectedProjectSummaries[slug] };
   });
   const stackGroups = profile.techContexts.filter((context) => context.category !== "AI");
-  const aiTools = profile.techContexts.find((context) => context.category === "AI");
+  const problemSolvingCases = getSelectedProblemSolving();
+  const aiWorkflowCase = getProjectProblemSolving("enterprise-cms-erp").find((item) => item.aiWorkflow);
 
   return (
     <main className="portfolio-home">
@@ -111,6 +104,7 @@ export default function Home() {
                         <p className="featured-summary">{project.card.description}</p>
                         <p className="project-stack">{project.card.stack.join(" · ")}</p>
                         <div className="featured-project-link">
+                          {project.demo && <p><Link className="text-link detail-link" href={project.demo.href}>{project.demo.label} →</Link></p>}
                           <Link className="text-link detail-link" href={`/projects/${project.slug}`} aria-label={`${project.card.title} 상세 보기`}>
                             <span className="cta-label">프로젝트 상세 <span className="cta-arrow" aria-hidden="true">↗</span></span>
                           </Link>
@@ -134,6 +128,13 @@ export default function Home() {
                       <ProjectEvidence evidence={project.card.evidence} />
                       <p className="project-stack">{project.card.stack.join(" · ")}</p>
                       <div className="featured-project-link">
+                        {project.demo && (
+                          <p>
+                            <Link className="text-link detail-link" href={project.demo.href} aria-label={`${project.card.title} ${project.demo.label}`}>
+                              <span className="cta-label">{project.demo.label} <span className="cta-arrow" aria-hidden="true">↗</span></span>
+                            </Link>
+                          </p>
+                        )}
                         <Link className="text-link detail-link" href={`/projects/${project.slug}`} aria-label={`${project.card.title} 상세 보기`}>
                           <span className="cta-label">프로젝트 상세 <span className="cta-arrow" aria-hidden="true">↗</span></span>
                         </Link>
@@ -164,11 +165,8 @@ export default function Home() {
                     <h3>{item.title}</h3>
                   </div>
                   <div className="case-content">
-                    <p className="case-conclusion">{item.conclusion}</p>
-                    <ul className={`case-flow${item.flowKind === "parallel" ? " case-flow-branches" : ""}`} aria-label={`${item.title} 처리 흐름`}>
-                      {item.flow.map((step) => <li key={step}>{step}</li>)}
-                    </ul>
-                    <p className="case-description">{item.description}</p>
+                    <p className="case-conclusion">{item.summary}</p>
+                    <Link className="text-link" href={`/problem-solving/${item.slug}/`}>판단과 구현 보기 →</Link>
                   </div>
                 </article>
               ))}
@@ -194,6 +192,7 @@ export default function Home() {
               </div>
             </div>
             <p className="ai-case-note">{miniMesAiCase.description}</p>
+            {aiWorkflowCase && <div className="featured-project-link"><Link className="text-link" href={`/problem-solving/${aiWorkflowCase.slug}/#ai-workflow`}>CMS 공개 재구현의 판단·AI 작업 기록 →</Link></div>}
           </Section>
         </div>
       </div>
@@ -235,7 +234,6 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            {aiTools && <p className="ai-tools"><span>AI 도구</span>{aiTools.items.join(" · ")}</p>}
           </Section>
         </div>
       </div>

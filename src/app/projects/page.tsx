@@ -25,6 +25,7 @@ function ProjectRow({ project, summary }: { project: ArchiveProject; summary?: S
       </dl>
       <div className={styles.projectFooter}>
         <p className={styles.stack}>{(summary ? summary.stack : project.stack).join(" · ")}</p>
+        {project.demo && <Link className={`${styles.detailLink} detail-link`} href={project.demo.href}>{project.demo.label} →</Link>}
         {project.slug !== null && (
           <Link className={`${styles.detailLink} detail-link`} href={`/projects/${project.slug}/`} aria-label={`${project.title} 프로젝트 보기`}>
             <span className="cta-label">프로젝트 보기 <span className="cta-arrow" aria-hidden="true">↗</span></span>
