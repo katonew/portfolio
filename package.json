@@ -7,7 +7,7 @@
     "build": "next build",
     "package:deploy": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-deploy.ps1",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint src"
   },
   "dependencies": {
     "next": "^16.2.7",
@@ -18,7 +18,7 @@
     "@types/node": "^25.9.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "eslint": "^10.4.1",
+    "eslint": "9.39.5",
     "eslint-config-next": "^16.2.7",
     "typescript": "^6.0.3"
   }
