@@ -12,6 +12,8 @@ const crops = {
 };
 
 type ProjectEvidenceImageProps = {
+  id?: string;
+  sizes?: string;
   src: string;
   alt: string;
   width: number;
@@ -24,16 +26,17 @@ type ProjectEvidenceImageProps = {
   priority?: boolean;
 };
 
-export function ProjectEvidenceImage({ src, alt, width, height, variant, caption, title, href, home = false, priority = false }: ProjectEvidenceImageProps) {
+export function ProjectEvidenceImage({ id, sizes, src, alt, width, height, variant, caption, title, href, home = false, priority = false }: ProjectEvidenceImageProps) {
   const crop = crops[variant];
   const frameStyle = {
     "--evidence-ratio": `${width} / ${crop.height}`,
     "--evidence-offset": `${-crop.top / height * 100}%`
   } as CSSProperties;
-  const image = <Image src={src} alt={alt} width={width} height={height} sizes={home ? "(max-width: 860px) 100vw, 620px" : variant === "dashboard" ? "(max-width: 860px) 100vw, 1080px" : "(max-width: 860px) 100vw, 960px"} priority={priority} />;
+  const imageSizes = sizes ?? (home ? "(max-width: 860px) 100vw, 620px" : variant === "dashboard" ? "(max-width: 860px) 100vw, 1080px" : "(max-width: 860px) 100vw, 960px");
+  const image = <Image src={src} alt={alt} width={width} height={height} sizes={imageSizes} priority={priority} />;
 
   return (
-    <figure id={`mes-evidence-${variant}`} className={`mes-evidence mes-evidence-${variant}${home ? " mes-home-screen" : ""}`}>
+    <figure id={id ?? `mes-evidence-${variant}`} className={`mes-evidence mes-evidence-${variant}${home ? " mes-home-screen" : ""}`}>
       {href ? <Link className="mes-evidence-frame" href={href} style={frameStyle} aria-label={`${alt} · 프로젝트 상세 보기`}>{image}</Link> : <div className="mes-evidence-frame" style={frameStyle}>{image}</div>}
       <figcaption>{title && <strong>{title}</strong>}{caption}</figcaption>
     </figure>
