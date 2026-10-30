@@ -6,6 +6,7 @@ export type ProblemSolving = {
   summary: string;
   problem: string;
   decision: string;
+  why?: string;
   implementation: string[];
   flow: string[];
   result: string;
@@ -20,6 +21,7 @@ export type ProblemSolving = {
 export const problemSolvingCases: ProblemSolving[] = [
   {
     slug: "mes-material-idempotency",
+    why: "요청 재전송의 중복 방지와 서로 다른 요청의 재고 경쟁은 별개의 문제이므로, 요청 식별과 최신 잔여량 검증을 함께 적용했습니다.",
     relatedEvidence: [
       { label: "소비·반환 화면", href: "/projects/mini-mes/#mes-evidence-material" },
       { label: "BOM·순소비 비교", href: "/projects/mini-mes/#mes-evidence-bom" }
@@ -53,6 +55,7 @@ export const problemSolvingCases: ProblemSolving[] = [
   },
   {
     slug: "mes-work-order-lock",
+    why: "실적 등록과 완료는 같은 작업지시의 상태·누적량을 다루므로, 자식 실적이나 LOT이 아니라 두 흐름이 공유하는 부모를 동시성 경계로 선택했습니다.",
     relatedEvidence: [{ label: "관련 생산·LOT 화면", href: "/projects/mini-mes/#mes-evidence-trace" }],
     projectSlug: "mini-mes",
     keyword: "MES / CONCURRENCY BOUNDARY",
@@ -82,6 +85,7 @@ export const problemSolvingCases: ProblemSolving[] = [
   },
   {
     slug: "mes-lot-traceability",
+    why: "현재 BOM은 과거 생산 당시의 기준을 대신할 수 없고, 여러 원장의 단순 JOIN은 합계를 중복시킬 수 있어 적용 버전과 실제 원장을 분리해 조회했습니다.",
     relatedEvidence: [
       { label: "LOT 생산 근거", href: "/projects/mini-mes/#mes-evidence-trace" },
       { label: "원자재 이력", href: "/projects/mini-mes/#mes-evidence-material" }

@@ -13,17 +13,20 @@ const documents = [
   { file: "AGENTS.md", path: "AGENTS.md", role: "업무 규칙 우선, 책임 경계, 미확정 정책의 결정 요청, 변경·검증 범위를 Agent 작업 기준으로 고정" }
 ];
 
-const screens = [
-  { file: "11-traceability-summary.png", width: 1296, height: 1458, variant: "trace", group: "production", title: "완제품 LOT의 생산 근거", caption: "완제품 LOT에서 당시 작업지시와 확정 Routing, 누적 생산실적을 역으로 확인합니다." },
-  { file: "12-traceability-materials.png", width: 1296, height: 1908, variant: "material", group: "material", title: "실제 소비와 연결된 반환", caption: "원소비에 연결된 반환을 확인하고, 원자재 LOT별 소비·반환·순소비를 집계합니다." },
-  { file: "12-traceability-materials.png", width: 1296, height: 1908, variant: "bom", group: "material", title: "확정 BOM의 예상량과 실제 순소비", caption: "당시 확정 BOM의 예상 소요량과 실제 소비에서 반환을 뺀 순소비를 비교합니다." },
-  { file: "10-quality-inspection-core.png", width: 1296, height: 741, variant: "quality", group: "quality", title: "확정 대상에 대한 회차별 품질검사", caption: "완료 시 확정한 검사 대상량을 기준으로 회차별 합격·불합격 수량을 누적합니다." }
-] as const;
+const screens = {
+  trace: { file: "11-traceability-summary.png", width: 1296, height: 1458, variant: "trace", title: "완제품 LOT의 생산 근거", caption: "완제품 LOT에서 당시 작업지시와 확정 Routing, 누적 생산실적을 역으로 확인합니다." },
+  material: { file: "12-traceability-materials.png", width: 1296, height: 1908, variant: "material", title: "실제 소비와 연결된 반환", caption: "원소비에 연결된 반환을 확인하고, 원자재 LOT별 소비·반환·순소비를 집계합니다." },
+  bom: { file: "12-traceability-materials.png", width: 1296, height: 1908, variant: "bom", title: "확정 BOM의 예상량과 실제 순소비", caption: "당시 확정 BOM의 예상 소요량과 실제 소비에서 반환을 뺀 순소비를 비교합니다." },
+  quality: { file: "10-quality-inspection-core.png", width: 1296, height: 741, variant: "quality", title: "확정 대상에 대한 회차별 품질검사", caption: "완료 시 확정한 검사 대상량을 기준으로 회차별 합격·불합격 수량을 누적합니다." }
+} as const;
 
-const evidenceGroups = [
-  { id: "production", title: "Production Evidence" },
-  { id: "material", title: "Material Traceability" },
-  { id: "quality", title: "Quality Inspection" }
+const developmentScope = ["Planning / PRD", "Business Rules", "Logical ERD", "DB Design / DDL", "Spring / MyBatis", "UI", "Test / Verify", "Deploy"];
+const designStages = ["PRD", "Business Rules", "Logical ERD", "Physical DB Design", "DDL"];
+const ownership = [
+  { title: "Domain & Planning", description: "제조 업무 흐름과 MVP 범위를 정하고 PRD·Business Rules에 상태·수량·소비·반환의 허용 조건을 정의했습니다." },
+  { title: "Data & Architecture", description: "논리 ERD와 물리 DB를 설계하고 schema.sql의 FK·CHECK·UNIQUE, 적용 BOM·Routing 보존과 트랜잭션 경계를 정했습니다." },
+  { title: "Implementation", description: "Spring Boot·MyBatis 서버와 Thymeleaf·JavaScript 화면을 구현했습니다. 소비·반환의 멱등성, 재고 변경과 WorkOrder 부모 잠금도 함께 설계했습니다." },
+  { title: "Verification & Delivery", description: "업무 규칙 기준 테스트와 검증 기록을 작성하고 Docker 배포 구성·공개 Demo를 연결했습니다. DB 미접속 테스트의 실행 기록과 실제 MySQL·브라우저 검증의 미확인 범위를 구분합니다." }
 ];
 
 const rules = [
@@ -38,6 +41,10 @@ const rules = [
 
 export function MiniMesProjectDetail({ project }: { project: Project }) {
   const cases = getProjectProblemSolving(project.slug);
+  const screen = (variant: keyof typeof screens) => {
+    const evidence = screens[variant];
+    return <ProjectEvidenceImage src={`/mini-mes/${evidence.file}`} alt={evidence.title} title={evidence.title} width={evidence.width} height={evidence.height} variant={evidence.variant} caption={evidence.caption} />;
+  };
   return (
     <main className="detail-page cms-detail-page mes-detail-page">
       <div className="container">
@@ -46,31 +53,45 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
           <div>
             <p className="eyebrow">Side Project · Independent Design &amp; Implementation</p>
             <h1>Mini MES</h1>
-            <p className="cms-hero-description">{project.oneLine}</p>
+            <p className="cms-hero-description">제조 업무 규칙과 PRD부터 DB·Spring·화면·배포까지 직접 설계하고 구현한 개인 MES 프로젝트입니다.</p>
           </div>
           <div className="mes-hero-meta">
             <p className="project-stack">{project.stack.join(" · ")}</p>
             <nav className="featured-project-link mes-actions" aria-label="Mini MES 프로젝트 증거">
               {project.demo && <a className="text-link primary-link" href={project.demo.href}>Live Demo ↗</a>}
               {project.github && <a className="text-link" href={project.github}>GitHub ↗</a>}
-              <a className="text-link" href="#product-screens">화면과 업무 규칙 ↓</a>
+              <a className="text-link" href="#mes-owned">직접 설계·구현한 범위 ↓</a>
             </nav>
           </div>
         </header>
 
-        <ProjectEvidenceImage
-          src="/mini-mes/01-dashboard.png"
-          alt="Mini MES 사이드바와 상단 작업지시·생산·품질 현황"
-          width={1585} height={3101} variant="dashboard"
-          title="생산 현황"
-          caption="작업지시 상태와 누적 생산·양품률·최종검사 현황을 같은 업무 흐름에서 조회합니다."
-          priority
-        />
+        <nav className="mes-ownership-process" aria-label="직접 수행한 End-to-End Scope">
+          <p className="case-study-label">End-to-End Scope</p>
+          <ol>{developmentScope.map((step, index) => <li key={step}><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>{step}</li>)}</ol>
+        </nav>
 
-        <section className="case-project-context" aria-labelledby="mes-overview">
-          <h2 id="mes-overview" className="case-study-label">Overview</h2>
+        <section className="mes-feature-story mes-production-story" aria-labelledby="mes-production-story">
+          <header><p className="case-study-label">Production Overview</p><h2 id="mes-production-story">작업지시에서 생산·품질까지, 하나의 업무 화면</h2></header>
+          <ProjectEvidenceImage
+            src="/mini-mes/01-dashboard.png"
+            alt="Mini MES 사이드바와 상단 작업지시·생산·품질 현황"
+            width={1585} height={3101} variant="dashboard"
+            title="생산 현황"
+            caption="작업지시 상태와 누적 생산·양품률·최종검사 현황을 같은 업무 흐름에서 조회합니다."
+            priority
+          />
+        </section>
+
+        <section className="cms-case mes-owned-section" id="mes-owned" aria-labelledby="mes-owned-title">
+          <p className="case-study-label">What I Owned</p>
+          <h2 id="mes-owned-title">업무의 기준부터 화면과 배포까지</h2>
           <p>{project.summary}</p>
-          <p className="case-disclosure">Side Project · 요구사항과 설계부터 서버·화면 구현, 배포 구성까지 직접 수행한 개인 프로젝트입니다. 회사 경력 기간에 포함하지 않습니다.</p>
+          <dl className="mes-ownership-list">{ownership.map((area) => <div key={area.title}><dt>{area.title}</dt><dd>{area.description}</dd></div>)}</dl>
+          <div className="mes-design-origin">
+            <h3>화면 구현의 기준이 된 문서와 설계</h3>
+            <ol>{documents.slice(0, 5).map((doc, index) => <li key={doc.file}><strong>{designStages[index]}</strong><a href={`${sourceRoot}${doc.path}`}>{doc.file} ↗</a></li>)}<li><strong>Spring Implementation</strong><span>Service / Transaction</span></li></ol>
+          </div>
+          <p className="case-disclosure">Independent Design &amp; Implementation · 회사에서 맡은 일부 기능이 아닌 개인 프로젝트입니다. 회사 경력 기간에 포함하지 않으며, 테스트·운영 검증은 확인한 범위만 설명합니다.</p>
         </section>
 
         <section className="cms-case" aria-labelledby="mes-why">
@@ -86,25 +107,37 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
           <p>원자재 소비·반환과 생산실적은 진행 중인 작업지시에서 처리합니다. 생산 완료 이후에는 확정된 양품 수량을 기준으로 최종검사를 수행합니다.</p>
         </section>
 
+
+
+        <div id="product-screens" className="mes-feature-stories">
+          <section className="mes-feature-story mes-material-story" aria-labelledby="mes-material-story">
+            <header className="mes-story-heading">
+              <div><p className="case-study-label">Material Traceability</p><h2 id="mes-material-story">소비·반환 원장과 확정 BOM을 나란히 확인</h2></div>
+              <p>원소비와 연결된 반환을 보존하고, LOT별 소비·반환·순소비를 집계합니다. 같은 수량처럼 보여도 실제 소비 이력과 BOM의 예상 소요량은 구분합니다.</p>
+            </header>
+            {screen("material")}
+            <div className="mes-story-followup"><p>작업 당시 확정한 BOM을 기준으로 예상량을 계산하고, 실제 소비에서 반환을 뺀 순소비와 비교합니다.</p>{screen("bom")}</div>
+          </section>
+
+          <section className="mes-feature-story mes-lot-story" aria-labelledby="mes-lot-story">
+            <header><p className="case-study-label">Finished Goods LOT Traceability</p><h2 id="mes-lot-story">완제품 LOT을 기준으로 제조 근거를 역추적</h2></header>
+            <div className="mes-story-editorial">
+              {screen("trace")}
+              <div className="mes-story-explanation">
+                <h3>생산 당시 기준과 실제 이력</h3>
+                <p>완제품 LOT에서 WorkOrder가 보존한 BOM·Routing과 실제 생산실적을 연결합니다. 현재 기준정보로 과거 이력을 추정하지 않습니다.</p>
+                <ol><li>완제품 LOT</li><li>WorkOrder · 확정 BOM / Routing</li><li>Production Result</li><li>Inspection</li></ol>
+                <Link className="text-link" href="/problem-solving/mes-lot-traceability/">역추적의 설계 판단 →</Link>
+              </div>
+            </div>
+            <div className="mes-story-followup"><p>작업지시 완료 시 확정한 양품 수량을 검사 대상으로 사용하고, 검사 결과는 생산실적을 덮어쓰지 않고 회차별로 누적합니다.</p>{screen("quality")}</div>
+          </section>
+        </div>
+
         <section className="cms-case" aria-labelledby="mes-built">
           <h2 id="mes-built">What I Built</h2>
           <dl className="mes-scope">{project.features?.map((feature) => <div key={feature.title}><dt>{feature.title}</dt><dd>{feature.description}</dd></div>)}</dl>
           <p className="case-disclosure">Controller·Service·Mapper XML·Thymeleaf 소스 기준으로 확인한 구현 범위입니다. 설비통신, 창고·출하, 재검사·재작업, 로그인·역할별 권한은 이 범위에 포함하지 않습니다.</p>
-        </section>
-
-        <section className="cms-case" id="product-screens" aria-labelledby="mes-screens">
-          <p className="case-study-label">Product Screens · Evidence</p>
-          <h2 id="mes-screens">화면에서 확인하는 업무 규칙</h2>
-          {evidenceGroups.map((group) => <div className="mes-evidence-group" key={group.id}>
-            <h3>{group.title}</h3>
-            {screens.filter((screen) => screen.group === group.id).map((screen) => <ProjectEvidenceImage
-            key={screen.variant}
-            src={`/mini-mes/${screen.file}`}
-            alt={screen.title} title={screen.title}
-            width={screen.width} height={screen.height} variant={screen.variant}
-            caption={screen.caption}
-          />)}
-          </div>)}
         </section>
 
         <section className="cms-case" aria-labelledby="mes-rules">
@@ -114,17 +147,20 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
         </section>
 
         <section className="cms-case mes-problem-section" aria-labelledby="mes-problems">
-          <p className="case-study-label">Problem Solving · Depth</p>
+          <p className="case-study-label">Engineering Decisions · Problem Solving</p>
           <h2 id="mes-problems">제조 흐름 안의 세 가지 설계 판단</h2>
           <ol className="mes-problem-list">
             {cases.map((item, index) => <li key={item.slug}>
               <span className="mes-case-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
               <div>
                 <h3>{item.title}</h3>
-                <p className="mes-case-summary">{item.summary}</p>
-                <dl className="mes-case-decision"><dt>Decision</dt><dd>{item.decision}</dd></dl>
+                <dl className="mes-engineering-decision">
+                  <div><dt>Problem</dt><dd>{item.problem}</dd></div>
+                  <div className="mes-my-decision"><dt>My Decision</dt><dd>{item.decision}</dd></div>
+                  {item.why && <div><dt>Why</dt><dd>{item.why}</dd></div>}
+                </dl>
                 <nav className="mes-related-evidence" aria-label={`${item.title} 상세와 관련 업무 화면`}>
-                  <Link className="text-link" href={`/problem-solving/${item.slug}/`}>문제·구현·검증 보기 →</Link>
+                  <Link className="text-link" href={`/problem-solving/${item.slug}/`}>Implementation / Verification →</Link>
                   {item.relatedEvidence?.map((evidence) => <Link className="text-link" key={evidence.href} href={evidence.href}>{evidence.label} ↓</Link>)}
                 </nav>
               </div>
@@ -135,7 +171,8 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
         <section className="cms-case" aria-labelledby="mes-architecture">
           <h2 id="mes-architecture">Architecture / Data Design</h2>
           <p>도메인별 모듈형 모놀리스에서 Controller는 요청·응답, Service는 업무 규칙·상태 전이·트랜잭션, MyBatis Mapper는 조회·변경을 담당합니다. Thymeleaf와 JavaScript로 화면을 연결했습니다.</p>
-          <ol className="mes-document-flow mes-design-flow"><li>Business Rules</li><li>ERD</li><li>Physical DB Design</li><li>schema.sql</li><li>Service / Transaction</li><li>Test / Demo</li></ol>
+          <a className="text-link" href="#mes-owned">앞에서 정의한 설계 기준 ↑</a>
+          <ol className="mes-document-flow mes-design-flow"><li>Business Rules</li><li>DB Constraints</li><li>Service Validation</li><li>Transaction Boundary</li></ol>
           <ol className="cms-flow"><li>Controller</li><li>Service / Transaction</li><li>MyBatis Mapper XML</li><li>MySQL</li></ol>
           <dl className="mes-scope">
             <div><dt>DB가 보장하는 규칙</dt><dd>작업지시·LOT·원장 사이의 FK, 작업지시당 완제품 LOT의 UNIQUE, 요청 scope/key와 결과 Receipt의 UNIQUE, 수량 양수·양품+불량 등 행 내부 CHECK를 schema.sql에 정의했습니다.</dd></div>
@@ -155,7 +192,7 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
 
         <section className="cms-case mes-supporting-section" id="ai-workflow" aria-labelledby="mes-ai">
           <p className="case-study-label">AI-assisted Engineering · Supporting Evidence</p>
-          <h2 id="mes-ai">판단 기준을 먼저 정하고, Agent의 작업을 통제했습니다</h2>
+          <h2 id="mes-ai">How I Worked with AI</h2>
           <p>업무 정책·데이터 구조·트랜잭션·상태 전이의 최종 결정자는 개발자입니다. AI는 문서화·구현·코드 탐색과 검토를 보조하며, 미확정 정책을 임의로 채우지 않도록 AGENTS.md에 기준을 고정했습니다.</p>
           <ol className="mes-workflow">
             <li><h3>Define / Document</h3><p>개발자가 MES 목표와 범위를 정하고 PRD → Business Rules → ERD → Physical DB Design → DDL로 구체화합니다.</p></li>
