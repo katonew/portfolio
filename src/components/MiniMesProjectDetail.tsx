@@ -20,13 +20,13 @@ const screens = {
   quality: { file: "10-quality-inspection-core.png", width: 1296, height: 741, variant: "quality", title: "확정 대상에 대한 회차별 품질검사", caption: "완료 시 확정한 검사 대상량을 기준으로 회차별 합격·불합격 수량을 누적합니다." }
 } as const;
 
-const developmentScope = ["Planning / PRD", "Business Rules", "Logical ERD", "DB Design / DDL", "Spring / MyBatis", "UI", "Test / Verify", "Deploy"];
+const developmentScope = ["PRD", "Business Rules", "ERD", "DB Design", "Backend", "UI", "Verification", "Deploy"];
 const designStages = ["PRD", "Business Rules", "Logical ERD", "Physical DB Design", "DB Constraints"];
 const ownership = [
-  { title: "Domain & Planning", description: "제조 업무 흐름과 MVP 범위를 정하고 PRD·Business Rules에 상태·수량·소비·반환의 허용 조건을 정의했습니다." },
-  { title: "Data & Architecture", description: "논리 ERD와 물리 DB를 설계하고 schema.sql의 FK·CHECK·UNIQUE, 적용 BOM·Routing 보존과 트랜잭션 경계를 정했습니다." },
-  { title: "Implementation", description: "Spring Boot·MyBatis 서버와 Thymeleaf·JavaScript 화면을 구현했습니다. 소비·반환의 멱등성, 재고 변경과 WorkOrder 부모 잠금도 함께 설계했습니다." },
-  { title: "Verification & Delivery", description: "업무 규칙 기준 테스트와 검증 기록을 작성하고 Docker 배포 구성·공개 Demo를 연결했습니다. DB 미접속 테스트의 실행 기록과 실제 MySQL·브라우저 검증의 미확인 범위를 구분합니다." }
+  { title: "Domain & Planning", items: ["제조 업무 흐름·MVP 범위", "PRD·Business Rules", "상태·수량·소비·반환 정책"] },
+  { title: "Data & Architecture", items: ["논리 ERD·물리 DB 설계", "schema.sql / FK·CHECK·UNIQUE", "적용 BOM·Routing 보존"] },
+  { title: "Implementation", items: ["Spring Boot / MyBatis", "Thymeleaf / JavaScript", "Transaction / Lock / Idempotency"] },
+  { title: "Verification & Delivery", items: ["업무 규칙 테스트·검증 기록", "DB 미접속 테스트 실행 기록", "Docker 배포 구성·공개 Demo"] }
 ];
 
 const rules = [
@@ -51,7 +51,7 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
         <Link className="back-link" href="/projects/">프로젝트 목록으로 돌아가기</Link>
         <header className="cms-project-hero mes-case-hero mes-wide">
           <div className="mes-hero-copy">
-            <p className="eyebrow">Personal / Side Project<br />Independent Design &amp; Implementation</p>
+            <p className="eyebrow">개인 사이드 프로젝트<br />기획·설계·구현·배포 직접 수행</p>
             <h1>Mini MES</h1>
             <p className="cms-hero-description">제조 업무 규칙과 PRD부터 DB·Spring·화면·배포까지 직접 설계하고 구현한 개인 MES 프로젝트입니다.</p>
             <div className="mes-hero-meta">
@@ -74,8 +74,9 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
           />
         </header>
 
-        <nav className="mes-ownership-process" aria-label="직접 수행한 End-to-End Ownership">
+        <nav className="mes-ownership-process" aria-labelledby="mes-ownership-statement">
           <p className="case-study-label">End-to-End Ownership</p>
+          <h2 id="mes-ownership-statement">처음부터 끝까지 직접 설계하고 구현했습니다.</h2>
           <ol>{developmentScope.map((step, index) => <li key={step}><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>{step}</li>)}</ol>
         </nav>
 
@@ -83,8 +84,8 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
           <p className="case-study-label">What I Owned</p>
           <h2 id="mes-owned-title">업무의 기준부터 화면과 배포까지</h2>
           <p>{project.summary}</p>
-          <dl className="mes-ownership-list">{ownership.map((area) => <div key={area.title}><dt>{area.title}</dt><dd>{area.description}</dd></div>)}</dl>
-          <p className="case-disclosure">Independent Design &amp; Implementation · 회사에서 맡은 일부 기능이 아닌 개인 프로젝트입니다. 회사 경력 기간에 포함하지 않으며, 테스트·운영 검증은 확인한 범위만 설명합니다.</p>
+          <dl className="mes-ownership-list">{ownership.map((area) => <div key={area.title}><dt>{area.title}</dt><dd><ul>{area.items.map((item) => <li key={item}>{item}</li>)}</ul></dd></div>)}</dl>
+          <p className="case-disclosure">Independent Design &amp; Implementation · 회사에서 맡은 일부 기능이 아닌 개인 프로젝트입니다. 회사 경력 기간에 포함하지 않습니다. DB 미접속 테스트 실행 기록은 확인했으며, 실제 MySQL·브라우저 검증의 성공 여부는 확인하지 않았습니다.</p>
         </section>
 
         <div id="product-screens" className="mes-feature-stories mes-wide">
@@ -103,7 +104,7 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
               width={1585} height={3101} variant="dashboard"
               title="생산 현황"
               caption="작업지시 상태와 누적 생산·양품률·최종검사 현황을 같은 업무 흐름에서 조회합니다."
-              sizes="(max-width: 1440px) 100vw, 1320px"
+              sizes="(max-width: 1440px) 100vw, 1360px"
             />
             <div className="mes-production-explanation">
               <p>작업지시 상태와 누적 생산, 양품·불량과 최종검사 현황을 연결해 확인합니다.</p>
