@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Section } from "@/components/Section";
 import { ContactDetails } from "@/components/ContactDetails";
+import { ProjectEvidenceImage } from "@/components/ProjectEvidenceImage";
 import {
   aiDelegatedTasks,
   careerTimeline,
@@ -111,12 +112,13 @@ export default function Home() {
                           </Link>
                         </div>
                       </div>
-                      <figure className="mes-home-screen">
-                        <Link href="/projects/mini-mes/" aria-label="Mini MES 화면과 프로젝트 상세 보기">
-                          <Image src="/mini-mes/01-dashboard.png" alt="사이드바를 포함한 Mini MES 생산 현황 대시보드" width={1585} height={3101} sizes="(max-width: 860px) 100vw, 620px" />
-                        </Link>
-                        <figcaption>생산 현황 · 작업지시 상태, 누적 생산량, 양품률과 최종검사 현황을 함께 조회합니다.</figcaption>
-                      </figure>
+                      <ProjectEvidenceImage
+                        src="/mini-mes/01-dashboard.png"
+                        alt="Mini MES 사이드바와 상단 생산 현황"
+                        width={1585} height={3101} variant="dashboard"
+                        caption="작업지시 상태와 누적 생산·양품률·최종검사 현황을 같은 업무 흐름에서 조회합니다."
+                        href="/projects/mini-mes/" home
+                      />
                     </>
                   ) : (
                     <>

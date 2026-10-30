@@ -10,53 +10,66 @@
   --header-height: 68px;
 }
 
-/* Mini MES: existing editorial sections, with screenshots as evidence. */
-.mes-home-screen,
-.mes-screen {
+/* The frame owns layout height; source dimensions only position the crop. */
+.mes-evidence {
   min-width: 0;
   margin: 0;
 }
 
-.mes-home-screen img {
+.mes-evidence-frame {
   display: block;
+  position: relative;
   width: 100%;
-  height: auto;
-  max-height: 620px;
-  object-fit: contain;
-  object-position: top center;
+  aspect-ratio: var(--evidence-ratio);
+  max-height: 760px;
+  overflow: hidden;
+  border: 1px solid var(--line);
   background: var(--surface-muted);
 }
 
-.mes-home-screen figcaption,
-.mes-screen figcaption {
-  margin-top: 14px;
+.mes-evidence-frame img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: var(--evidence-image-width, 100%);
+  max-width: none;
+  height: auto;
+  transform: translateY(var(--evidence-offset));
+}
+
+.mes-evidence figcaption {
+  margin-top: 12px;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.8;
 }
 
-.mes-screen figcaption strong {
+.mes-evidence figcaption strong {
   display: block;
   margin-bottom: 4px;
   color: var(--text);
   font-size: 17px;
 }
 
-.mes-detail-page .mes-screen {
-  margin: 32px 0 56px;
+.mes-evidence-original {
+  display: inline-block;
+  margin-left: 12px;
+  white-space: nowrap;
 }
 
-.mes-screen img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border: 1px solid var(--line);
+.mes-detail-page .mes-evidence {
+  width: 85%;
+  max-width: 960px;
+  margin: 32px auto 48px;
 }
 
-.mes-overview-screen img {
-  max-height: 900px;
-  object-fit: contain;
-  background: var(--surface-muted);
+.mes-detail-page .mes-evidence-trace {
+  max-width: 860px;
+}
+
+.mes-evidence-trace .mes-evidence-frame {
+  max-height: 840px;
 }
 
 .mes-focus {
@@ -150,11 +163,22 @@
 }
 
 @media (max-width: 860px) {
-  .mes-home-screen img { max-height: 520px; }
+  .mes-detail-page .mes-evidence { width: 100%; }
+  .mes-evidence-dashboard .mes-evidence-frame {
+    aspect-ratio: 4 / 3;
+    --evidence-image-width: 125%;
+  }
   .mes-scope > div,
   .mes-documents > div {
     grid-template-columns: 1fr;
     gap: 8px;
+  }
+}
+
+@media (max-width: 520px) {
+  .mes-evidence-dashboard .mes-evidence-frame {
+    aspect-ratio: 1;
+    --evidence-image-width: 135%;
   }
 }
 

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { ProjectEvidenceImage } from "@/components/ProjectEvidenceImage";
 import Link from "next/link";
 import type { Project } from "@/data/profile";
 import { getProjectProblemSolving } from "@/lib/problem-solving";
@@ -14,10 +14,11 @@ const documents = [
 ];
 
 const screens = [
-  { file: "11-traceability-summary.png", width: 1296, height: 1458, title: "완제품 LOT의 생산 근거", caption: "완제품 LOT에서 작업지시와 당시 확정한 Routing·BOM, 누적 생산실적을 연결합니다. 현재 기준정보로 과거 생산을 추정하지 않습니다." },
-  { file: "12-traceability-materials.png", width: 1296, height: 1908, title: "소비·반환과 확정 BOM 비교", caption: "실제 소비와 원소비에 연결된 반환을 LOT별로 집계합니다. 확정 BOM의 예상 소요량과 실제 순소비를 분리해 차이를 확인합니다." },
-  { file: "10-quality-inspection-core.png", width: 1296, height: 741, title: "확정 대상에 대한 회차별 품질검사", caption: "작업지시 완료 시 확정한 검사 대상과 누적 검사·합격·불합격 수량, 회차별 검사 이력을 함께 조회합니다." }
-];
+  { file: "11-traceability-summary.png", width: 1296, height: 1458, variant: "trace", title: "완제품 LOT의 생산 근거", caption: "완제품 LOT에서 당시 작업지시와 확정 Routing, 누적 생산실적을 역으로 확인합니다." },
+  { file: "12-traceability-materials.png", width: 1296, height: 1908, variant: "material", title: "실제 소비와 연결된 반환", caption: "원소비에 연결된 반환을 확인하고, 원자재 LOT별 소비·반환·순소비를 집계합니다." },
+  { file: "12-traceability-materials.png", width: 1296, height: 1908, variant: "bom", title: "확정 BOM의 예상량과 실제 순소비", caption: "당시 확정 BOM의 예상 소요량과 실제 소비에서 반환을 뺀 순소비를 비교합니다." },
+  { file: "10-quality-inspection-core.png", width: 1296, height: 741, variant: "quality", title: "확정 대상에 대한 회차별 품질검사", caption: "완료 시 확정한 검사 대상량을 기준으로 회차별 합격·불합격 수량을 누적합니다." }
+] as const;
 
 const rules = [
   "작업지시당 완제품 LOT은 최대 1개입니다. 최초 생산실적에서 생성하고 후속 실적은 같은 LOT에 연결합니다.",
@@ -47,12 +48,14 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
           </nav>
         </header>
 
-        <figure className="mes-screen mes-overview-screen">
-          <a href="/mini-mes/01-dashboard.png" aria-label="생산 현황 대시보드 원본 이미지 보기">
-            <Image src="/mini-mes/01-dashboard.png" alt="사이드바와 작업지시·생산·품질 지표를 포함한 Mini MES 대시보드 전체 화면" width={1585} height={3101} sizes="(max-width: 860px) 100vw, 1080px" priority />
-          </a>
-          <figcaption><strong>생산 현황</strong>작업지시 상태, 누적 생산량, 양품률과 최종검사 현황을 함께 조회합니다. 사이드바를 포함한 전체 화면이며 이미지를 누르면 원본을 확인할 수 있습니다.</figcaption>
-        </figure>
+        <ProjectEvidenceImage
+          src="/mini-mes/01-dashboard.png"
+          alt="Mini MES 사이드바와 상단 작업지시·생산·품질 현황"
+          width={1585} height={3101} variant="dashboard"
+          title="생산 현황"
+          caption="작업지시 상태와 누적 생산·양품률·최종검사 현황을 같은 업무 흐름에서 조회합니다."
+          priority
+        />
 
         <section className="case-project-context" aria-labelledby="mes-overview">
           <h2 id="mes-overview" className="case-study-label">Overview</h2>
@@ -82,12 +85,13 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
         <section className="cms-case" id="product-screens" aria-labelledby="mes-screens">
           <p className="case-study-label">Product Screens · Evidence</p>
           <h2 id="mes-screens">화면에서 확인하는 업무 규칙</h2>
-          {screens.map((screen) => <figure className="mes-screen" key={screen.file}>
-            <a href={`/mini-mes/${screen.file}`} aria-label={`${screen.title} 원본 이미지 보기`}>
-              <Image src={`/mini-mes/${screen.file}`} alt={screen.title} width={screen.width} height={screen.height} sizes="(max-width: 860px) 100vw, 1080px" />
-            </a>
-            <figcaption><strong>{screen.title}</strong>{screen.caption}</figcaption>
-          </figure>)}
+          {screens.map((screen) => <ProjectEvidenceImage
+            key={screen.variant}
+            src={`/mini-mes/${screen.file}`}
+            alt={screen.title} title={screen.title}
+            width={screen.width} height={screen.height} variant={screen.variant}
+            caption={screen.caption}
+          />)}
         </section>
 
         <section className="cms-case" aria-labelledby="mes-rules">
