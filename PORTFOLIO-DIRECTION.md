@@ -11,11 +11,23 @@
 
 Project를 하나의 Problem Solving으로 축소하지 않는다. 실무 기능 → 기능 증거 → 재검토 → 후속 개선 → AI 기록 순서를 지킨다. AI를 빼도 프로젝트와 담당 업무가 이해되어야 한다.
 
+## 대표 프로젝트 — Mini MES
+
+- Selected Work는 Mini MES → CMS / ERP → Data Platform → Property 순서로 보여준다. Home에서 Mini MES는 전체 폭의 대표 영역과 실제 대시보드 이미지로 우선한다.
+- Mini MES는 **Side Project / Independent Design & Implementation**이다. `projects`에 개인 프로젝트로 등록하되 `careerTimeline`과 회사 경력·재직 기간에 포함하지 않는다. CMS는 기업 업무 시스템 경험의 대표 프로젝트로 유지한다.
+- Mini MES 상세는 제조 흐름·구현 기능·업무 규칙·데이터 설계의 폭을 설명한다. 소비/반환 멱등성·WorkOrder 부모 잠금·LOT 역추적은 독립 Problem Solving으로 연결한다.
+- 공개 Demo와 실제 Screenshot을 설명·AI Workflow보다 앞에 둔다. 대시보드 전체 화면, LOT 생산 근거, 자재 비교, 품질검사의 네 화면만 사용하고 각 화면에 업무 규칙 캡션을 붙인다.
+- PRD → Business Rules → ERD → Physical DB Design → DDL을 구현 판단 기준으로 설명한다. 추천안·미확정 정책과 Source에서 확인한 구현을 구분한다.
+- AI Workflow는 사람이 목표·규칙·판단 기준을 정의하고 AGENTS.md로 Agent 범위를 통제한 과정이다. Source 검토, 과거 테스트 기록, 실제 DB/브라우저 실행 여부를 구분한다.
+- Graphify는 로컬 그래프·탐색 규칙·query/path 결과에 근거한 코드 관계 탐색으로 설명한다. MCP 사용 이력으로 추정하지 않는다. Superpowers는 반환 설계·계획 문서와 실행 지침이 확인되는 범위만 설명한다. GSD Core 등 사용 근거 없는 도구는 제외한다.
+- Figma MCP는 개발자 제공 이력에 근거한 **Portfolio Production Workflow**다. Web Home 초안·A4 PDF 8페이지·Mini MES Screenshot 배치 과정이며 MES Source 구현 도구와 구분한다.
+
 ## 콘텐츠 소유권과 연결
 
 - `src/data/profile.ts`: 프로필·회사별 경력·Project의 업무 범위와 대표 기능을 소유한다. Home용 요약은 소개 길이만 다르게 하며 기술 문제를 Project 전체로 바꾸지 않는다.
 - `src/data/problem-solving.ts`: Problem Solving 본문과 `projectSlug` 관계의 기준이다. Project의 연결 목록과 Home Preview는 이 관계로 조회한다. 같은 본문을 Home·Project 데이터에 다시 작성하지 않는다.
 - `src/lib/projects.ts`: Project·경력 아카이브 조회를 담당한다. 회사 재직 기간을 프로젝트 수행 기간으로 대신하지 않는다.
+- `MiniMesProjectDetail.tsx`: Mini MES 전용 화면 증거·업무 규칙·설계·Engineering/Portfolio Production Workflow를 구성한다. 문제 해결 본문은 복제하지 않고 기존 관계 조회를 사용한다.
 - `/projects/[slug]/`: 시스템 개요 → 담당 범위 → 실제 기능 → 대표 기능·Evidence → 연결된 Problem Solving → 기술·운영 맥락.
 - `/problem-solving/[slug]/`: Summary → Problem → Decision → Implementation/Action → Result → Evidence/Verification. Decision이 선택 이유를 설명해야 한다.
 - Demo 링크는 해당 Project의 `demo`가 소유한다. 확인 가능한 주소가 있을 때만 추가한다. 배포하지 않은 localhost·가짜 Coming Soon·검증되지 않은 주소를 공개 링크로 쓰지 않는다.

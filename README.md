@@ -2,6 +2,21 @@
 
 SI 4년차 Java/Spring 개발자 경력기술서 기반 개인 포트폴리오 사이트입니다.
 
+Mini MES를 최우선 대표 프로젝트로 소개합니다. Side Project / Independent Design & Implementation으로 회사 경력과 분리하며, CMS는 기업 업무 시스템 경험의 대표 프로젝트로 유지합니다.
+
+## Mini MES 대표 프로젝트 — 2026-10-30
+
+- Home: Mini MES 대형 대표 영역 → CMS / ERP → Data Platform → Property.
+- 상세: 제조 흐름, 실제 구현 기능, 핵심 업무 규칙, DB·트랜잭션 설계, 네 화면의 증거, 세 문제 해결, PRD부터 구현까지의 판단 기준, AI Workflow와 검증 범위를 연결합니다.
+- [Live Demo](http://mes.katonew.kro.kr/) / [GitHub](https://github.com/katonew/mini_mes)를 구분해 제공합니다. 공개 주소의 HTTP 200과 대시보드 제목을 확인했으며 브라우저 조작은 수행하지 않았습니다.
+- 실제 캡처: `01-dashboard.png`, `11-traceability-summary.png`, `12-traceability-materials.png`, `10-quality-inspection-core.png`. 사이드바를 포함한 대시보드 전체 화면과 각 업무 규칙 캡션을 사용합니다.
+- Source 근거: 소비·반환 Receipt와 fingerprint, REQUIRES_NEW 트랜잭션, WorkOrder/원소비/LOT 잠금, 조건부 재고 변경, 생산실적·완료 직렬화, 완료 시 검사 대상 확정, LOT 역추적.
+- 테스트: 반환 검증 문서의 DB 미접속 14개 클래스 83건 통과 기록을 인용합니다. MySQL 경합·롤백 테스트의 작성과 실제 실행 성공을 구분하며 전체 MES 검증으로 확대하지 않습니다.
+- AI: 사람이 규칙과 판단 기준을 먼저 정하고 AGENTS.md로 Agent 작업을 통제합니다. Graphify의 로컬 그래프·query/path 참조 관계 탐색, Superpowers 반환 설계·계획과 실행 지침을 근거 범위 안에서 설명합니다. Graphify MCP 사용 및 GSD Core 적용은 추정하지 않습니다.
+- Figma MCP: 개발자 제공 작업 이력을 근거로 Web Home·A4 PDF 8페이지·Screenshot Evidence 배치를 Portfolio Production 과정으로 설명합니다. Mini MES Source 구현 도구로 표현하지 않습니다.
+- 의존성·기술 스택·회사 경력·Property Demo는 변경하지 않습니다. MES 저장소는 읽기만 하며 Portfolio 작업 결과를 push하지 않습니다.
+- Portfolio 검증: `npm run lint` 오류 0·기존 Property Demo Hook 경고 2, `npm run build`와 TypeScript 검사 성공·정적 페이지 20개 생성. 8개 페이지의 내부 링크·앵커 76개, 공개 GitHub 링크 17개 HTTP 200, 이미지 4개 원본 SHA-256 일치를 확인했습니다. 브라우저·개발 서버·반응형 시각 검사는 실행하지 않았습니다.
+
 ## 콘텐츠 구조
 
 [PORTFOLIO-DIRECTION.md](PORTFOLIO-DIRECTION.md)를 콘텐츠 변경의 기준으로 사용합니다.
