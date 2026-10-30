@@ -10,11 +10,98 @@ export type ProblemSolving = {
   flow: string[];
   result: string;
   verification: string[];
+  limitations?: string[];
+  sources?: { label: string; href: string }[];
   aiWorkflow?: { summary: string; aiTasks: string[]; developerDecisions: string[]; verification: string };
 };
 
 // 本문과 Project 연결의 단일 기준. Home과 Project는 이 데이터를 조회합니다.
 export const problemSolvingCases: ProblemSolving[] = [
+  {
+    slug: "mes-material-idempotency",
+    projectSlug: "mini-mes",
+    keyword: "MES / INVENTORY CONSISTENCY",
+    title: "원자재 소비·반환의 멱등성과 재고 원자성",
+    summary: "같은 요청의 재전송과 서로 다른 재고 변경 요청을 구분하고, 소비·반환 원장과 재고를 하나의 트랜잭션으로 처리했습니다.",
+    problem: "응답을 받지 못한 소비·반환 요청을 다시 보내면 재고가 중복 변경될 수 있습니다. 서로 다른 요청이 같은 LOT을 사용하거나 같은 원소비를 반환할 때는 최신 재고·반환 잔여량을 기준으로 판단해야 합니다.",
+    decision: "버튼 비활성화만으로 중복을 막지 않고 scope/key UNIQUE Receipt와 정규화 입력 fingerprint로 같은 업무 요청을 식별했습니다. 재전송은 최초 성공을 재사용하고 새 요청은 부모·원소비·LOT 잠금 안에서 최신 상태와 잔여량을 다시 검증합니다.",
+    implementation: [
+      "MaterialConsumptionTransactionService와 MaterialReturnTransactionService의 별도 Bean에서 REQUIRES_NEW / READ_COMMITTED 트랜잭션을 시작합니다.",
+      "소비는 Receipt 선점 → WorkOrder 잠금 → 확정 BOM 검증 → RawLot 잠금 → 조건부 차감 → 소비 INSERT → 성공 snapshot 기록 순서입니다.",
+      "반환은 원소비의 부모를 조회한 뒤 WorkOrder → 원소비 → RawLot 순서로 잠급니다. 최신 반환합과 원소비 잔여량, 등록수량 상한을 확인하고 조건부 복원·반환 INSERT를 함께 처리합니다.",
+      "Receipt UNIQUE 충돌은 실패한 트랜잭션을 종료한 뒤 새 읽기 트랜잭션에서 처리합니다. 같은 fingerprint면 최초 결과를 재사용하고 다른 입력은 거절합니다.",
+      "조건부 UPDATE 영향행수와 결과 연결을 확인합니다. 어느 단계든 실패하면 Receipt·재고·원장을 함께 롤백하며 원소비는 수정·삭제하지 않습니다."
+    ],
+    flow: ["요청 키 선점", "부모·LOT 잠금", "상태·수량 검증", "재고·원장 변경", "성공 기록 / 전체 롤백"],
+    result: "정적 Source에서 동일 요청의 성공 재사용과 신규 요청의 재검증, 원장·재고의 트랜잭션 경계를 확인했습니다.",
+    verification: [
+      "Service와 Mapper XML에서 FOR UPDATE, 재고 상한 조건과 영향행수 검증, 중복 Receipt 처리 경로를 대조했습니다.",
+      "반환 검증 문서에는 DB 미접속 14개 클래스 83건 통과 기록이 있습니다. 반환 계약·Service·Controller·MyBatis 파싱 및 기존 소비·RawLot·WorkOrder 회귀 범위입니다.",
+      "MySQL 통합 테스트 소스에는 동일 UUID 경합, 동시 소비·반환, CHECK 실패와 잠금 대기 timeout 롤백 사례가 있습니다. 작성된 시나리오와 실행 결과를 구분합니다."
+    ],
+    limitations: ["확인한 기록에서 실제 MySQL 통합 테스트는 미실행입니다. 실제 DB 경합·롤백 통과를 주장하지 않습니다.", "실제 물리적 반환과 입력 오류 교정은 다른 업무입니다. 반환을 임의 재고 보정이나 원소비 정정 기능으로 사용하지 않습니다."],
+    sources: [
+      { label: "소비 TransactionService", href: "https://github.com/katonew/mini_mes/blob/main/src/main/java/com/taehyung/mes/lot/MaterialConsumptionTransactionService.java" },
+      { label: "반환 TransactionService", href: "https://github.com/katonew/mini_mes/blob/main/src/main/java/com/taehyung/mes/lot/MaterialReturnTransactionService.java" },
+      { label: "반환 검증 기록", href: "https://github.com/katonew/mini_mes/blob/main/docs/material-return-verification.md" }
+    ]
+  },
+  {
+    slug: "mes-work-order-lock",
+    projectSlug: "mini-mes",
+    keyword: "MES / CONCURRENCY BOUNDARY",
+    title: "WorkOrder 부모 잠금으로 생산실적·완료 처리 직렬화",
+    summary: "생산실적 등록과 완료 처리가 같은 WorkOrder를 잠그고 최신 합계·상태를 판단하도록 동시성 경계를 맞췄습니다.",
+    problem: "실적 등록과 완료 요청이 잠금 없이 같은 이전 상태·합계를 읽으면 생산 상한이나 완료 조건 판단이 어긋날 수 있습니다. 최초 실적 두 건이 동시에 들어오면 LOT 생성도 경쟁합니다.",
+    decision: "실적 행이나 LOT만 잠그는 대신, 두 업무가 공유하는 WorkOrder 부모 행을 먼저 잠그도록 했습니다. 등록과 완료가 같은 경계를 통과한 후 최신 합계로 판단하게 하여 순서를 정합니다.",
+    implementation: [
+      "ProductionResultTransactionService는 Receipt 선점 후 WorkOrderMapper.findByIdForUpdate로 부모를 잠그고 IN_PROGRESS·제품 단위·현재 생산합을 확인합니다.",
+      "신규 수량을 합한 생산합이 지시수량을 넘으면 거절합니다. 첫 실적에서만 완제품 LOT을 만들고 이후 같은 작업지시의 LOT에 실적을 연결합니다. DB UNIQUE도 작업지시당 LOT 1개를 보호합니다.",
+      "WorkOrderService.complete도 READ_COMMITTED 트랜잭션에서 같은 부모를 잠근 뒤 실적을 재집계합니다. 누적 생산=지시수량과 생산=양품+불량을 확인한 후 COMPLETED·검사 대상 양품·완료 이력을 함께 저장합니다.",
+      "완료 요청이 먼저 잠금을 얻으면 당시 합계로 완료 가능 여부를 판단합니다. 실적이 먼저 반영되면 완료는 갱신된 합계를 읽고, 완료 이후 새 실적은 상태 검사에서 거절합니다."
+    ],
+    flow: ["WorkOrder FOR UPDATE", "최신 상태·실적합", "등록 상한 / 완료 조건", "실적 또는 완료 반영", "커밋"],
+    result: "등록과 완료 코드가 동일 부모 잠금·최신 합계 확인 경계를 사용하는 것을 확인했습니다. 설계 의도를 DB 경합 테스트 시나리오와 연결했습니다.",
+    verification: [
+      "WorkOrderService.complete, ProductionResultTransactionService.create, WorkOrderMapper XML의 잠금·집계·완료 UPDATE를 정적으로 대조했습니다.",
+      "ProductionResultMysqlIntegrationTests에 concurrentFirstRequestsCannotCreateTwoLots와 completionAndFinalResultRaceKeepsStateAndQuantityConsistent 시나리오가 작성되어 있습니다.",
+      "통합 테스트는 전용 로컬 스키마와 opt-in 환경변수가 필요한 기본 비활성 테스트입니다. 생산실적 검증 문서에서 작성 단계의 테스트 미실행을 확인했습니다."
+    ],
+    limitations: ["테스트 코드의 존재는 실제 InnoDB 경합 검증 통과를 의미하지 않습니다.", "이 경계는 해당 Service를 통과하는 업무 흐름에 적용됩니다. DB 직접 변경이나 별도 경로까지 자동으로 보호한다고 주장하지 않습니다."],
+    sources: [
+      { label: "생산실적 TransactionService", href: "https://github.com/katonew/mini_mes/blob/main/src/main/java/com/taehyung/mes/production/ProductionResultTransactionService.java" },
+      { label: "WorkOrderService", href: "https://github.com/katonew/mini_mes/blob/main/src/main/java/com/taehyung/mes/workorder/WorkOrderService.java" },
+      { label: "동시성 테스트 코드", href: "https://github.com/katonew/mini_mes/blob/main/src/test/java/com/taehyung/mes/production/ProductionResultMysqlIntegrationTests.java" }
+    ]
+  },
+  {
+    slug: "mes-lot-traceability",
+    projectSlug: "mini-mes",
+    keyword: "MES / HISTORICAL TRACEABILITY",
+    title: "완제품 LOT에서 생산·원자재·품질 이력 역추적",
+    summary: "생산 당시 확정한 BOM·Routing과 실제 소비·반환·실적·검사를 연결해 완제품 LOT의 제조 근거를 조회합니다.",
+    problem: "완제품의 생산 수량만 보면 어떤 기준과 원자재로 생산됐는지 설명하기 어렵습니다. 현재 BOM으로 과거 소비를 추정하거나 여러 원장을 단순 JOIN하면 기준이 바뀌거나 수량이 중복 집계될 수 있습니다.",
+    decision: "완제품 LOT → WorkOrder가 보존한 BOM 버전·Routing 개정을 조회하고, 실제 원장은 각각 읽어 연결·집계합니다. 예상 소요량과 실제 순소비를 별도 값으로 유지하고 한 읽기 트랜잭션에서 조회합니다.",
+    implementation: [
+      "LotTraceController에서 LOT ID를 받아 LotTraceService로 전달합니다. Service는 readOnly / REPEATABLE_READ로 같은 읽기 범위를 사용합니다.",
+      "ProductionResultMapper에서 LOT과 실적을, WorkOrderMapper에서 부모 작업지시를 읽습니다. BomMapper·RoutingMapper로 적용 버전과 공정 구성을 조회합니다.",
+      "MaterialConsumptionMapper·MaterialReturnMapper의 실제 소비·반환을 연결해 LOT별 사용량과 순소비를 집계하고, 확정 BOM의 예상량과 비교합니다.",
+      "QualityInspectionMapper에서 해당 완제품 LOT의 회차별 검사를 조회해 확정 검사 대상·누적 합격·불합격을 표시합니다.",
+      "연결된 기준정보가 없거나 정합성을 확인할 수 없으면 경고를 표시합니다. 조회에서 원본을 보정하거나 현재 BOM으로 빈 이력을 채우지 않습니다."
+    ],
+    flow: ["완제품 LOT", "작업지시", "확정 BOM·Routing", "실제 소비·반환", "생산실적·품질검사"],
+    result: "실제 역추적 화면에서 LOT의 생산 근거와 소비·반환·BOM 비교를 제시합니다. Source에서 저장된 관계를 따라 읽는 조회 흐름을 확인했습니다.",
+    verification: [
+      "LotTraceService와 연관 Mapper, trace/detail.html에서 적용 기준·실제 원장·집계·경고 표시의 연결을 확인했습니다.",
+      "Project Detail의 traceability-summary와 traceability-materials Screenshot으로 조회 결과의 구성을 제시합니다.",
+      "Live Demo는 연결되어 있으며 HTTP 응답을 확인했습니다. 이번 작업에서 브라우저로 특정 LOT을 선택하거나 수량을 대조하지 않았습니다."
+    ],
+    limitations: ["조회 대상은 시스템에 저장된 업무 이력입니다. 물리적 원자재 사용 사실이나 개별 제품 시리얼 단위 추적을 보증하지 않습니다.", "완제품 LOT 기준 역추적 범위이며 원자재 LOT 정방향 추적·LOT 분할·병합을 구현 완료로 표현하지 않습니다."],
+    sources: [
+      { label: "LotTraceService", href: "https://github.com/katonew/mini_mes/blob/main/src/main/java/com/taehyung/mes/trace/LotTraceService.java" },
+      { label: "업무 규칙과 실제 화면", href: "/projects/mini-mes/#product-screens" }
+    ]
+  },
   {
     slug: "cms-change-save",
     projectSlug: "enterprise-cms-erp",
@@ -136,4 +223,4 @@ export const problemSolvingCases: ProblemSolving[] = [
   },
 ];
 
-export const selectedProblemSolvingSlugs = ["cms-change-save", "cart-purchase-options", "parcel-selection-state"];
+export const selectedProblemSolvingSlugs = ["mes-material-idempotency", "mes-work-order-lock", "mes-lot-traceability", "cms-change-save", "cart-purchase-options", "parcel-selection-state"];

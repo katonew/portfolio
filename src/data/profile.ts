@@ -1,6 +1,8 @@
 
 
 export type Project = {
+  kind?: "side-project";
+  github?: string;
   slug: string;
   title: string;
   period: string | null;
@@ -151,6 +153,34 @@ export const aiCodeVerification = [
 ];
 
 export const projects: Project[] = [
+  {
+    slug: "mini-mes",
+    kind: "side-project",
+    title: "Mini MES",
+    period: null,
+    domain: "제조 / 생산관리 / LOT 역추적",
+    oneLine: "제조 업무 규칙과 데이터 무결성을 Spring Boot로 구현한 생산관리 사이드 프로젝트",
+    summary: "작업지시부터 원자재 소비·반환, 생산실적, 완제품 LOT, 최종 품질검사와 역추적까지 연결한 개인 프로젝트입니다. 요구사항·업무 규칙·데이터 구조를 정의하고 Java 17 / Spring Boot / MyBatis로 구현했습니다.",
+    decisionPoints: ["업무 규칙과 DB 제약의 책임 분리", "부모 잠금과 요청 멱등성", "생산 당시 BOM·Routing 보존"],
+    role: ["Independent Design & Implementation · 개인 설계·구현", "PRD·업무 규칙·ERD·물리 DB 설계", "서버·Thymeleaf 화면 구현 및 Docker 배포 구성"],
+    implementations: ["품목·BOM 버전·공정·Routing 개정 관리", "생산계획·작업지시와 상태 전이", "원자재 LOT·실제 소비·원소비에 연결된 반환", "생산실적·완제품 LOT·작업지시 완료", "완료 시 확정 대상에 대한 회차별 품질검사", "완제품 LOT 기준 생산·자재·품질 역추적"],
+    features: [
+      { title: "기준정보", description: "품목, BOM 버전, 공정과 Routing 개정을 관리하고 작업지시에 적용한 버전을 보존합니다." },
+      { title: "생산과 자재", description: "생산계획·작업지시에서 원자재 LOT 소비·반환과 생산실적을 연결합니다. 첫 생산실적에서 완제품 LOT을 만들고 후속 실적은 같은 LOT에 연결합니다." },
+      { title: "품질과 역추적", description: "완료 시 확정한 검사 대상에 회차별 합격·불합격을 누적하고, 완제품 LOT에서 확정 BOM·Routing과 실제 소비·반환·생산·검사 이력을 조회합니다." }
+    ],
+    difficulties: [],
+    verification: ["Controller·Service·Mapper·SQL·화면·테스트 코드를 정적으로 확인했습니다.", "반환 검증 문서의 DB 미접속 테스트 통과 기록과 MySQL 통합 테스트 미실행 범위를 구분합니다."],
+    result: ["공개 Demo와 실제 화면을 통해 생산·자재·품질의 연결을 제시합니다."],
+    stack: ["Java 17", "Spring Boot", "MyBatis", "MySQL", "Thymeleaf", "JavaScript", "Docker"],
+    stackContext: ["도메인별 모듈형 모놀리스 · Controller → Service → Mapper XML", "Service의 상태·수량 검증과 Transaction, DB의 FK·CHECK·UNIQUE 제약을 함께 사용", "Docker Compose의 Java 실행 컨테이너와 외부 DB·Proxy 연결 구성"],
+    flow: ["작업지시", "원자재 소비", "필요 시 반환", "생산실적", "완제품 LOT", "작업지시 완료", "최종 품질검사", "LOT 역추적"],
+    securityNote: "개인 Side Project입니다. 회사 프로젝트나 경력 기간에 포함하지 않습니다.",
+    portfolioSentences: [],
+    featured: true,
+    demo: { href: "http://mes.katonew.kro.kr/", label: "Live Demo" },
+    github: "https://github.com/katonew/mini_mes"
+  },
   {
     slug: "enterprise-cms-erp",
     features: [
@@ -496,6 +526,14 @@ export const projects: Project[] = [
 
 // 메인 카드용 요약. 상세 프로젝트의 역할·어려움·해결 기록을 기준으로 작성합니다.
 export const selectedProjectSummaries = {
+  "mini-mes": {
+    category: "SIDE PROJECT · INDEPENDENT DESIGN & IMPLEMENTATION",
+    title: "Mini MES",
+    description: "작업지시의 상태·수량 규칙부터 원자재 소비·반환, 생산실적, 품질검사, 완제품 LOT 역추적까지 하나의 제조 흐름으로 연결했습니다.",
+    statement: ["제조 업무 규칙을 정의하고,", "생산 이력을 코드와 데이터로 연결했습니다."],
+    evidence: { kind: "flow" as const, steps: ["작업지시", "소비·반환", "생산·LOT", "검사·역추적"] },
+    stack: ["Java 17", "Spring Boot", "MyBatis", "MySQL"]
+  },
   "enterprise-cms-erp": {
     category: "BUSINESS SYSTEM",
     title: "CMS / ERP 관리자 시스템",
@@ -532,6 +570,7 @@ export const selectedProjectSummaries = {
 };
 
 export const selectedProjectSlugs: (keyof typeof selectedProjectSummaries)[] = [
+  "mini-mes",
   "enterprise-cms-erp",
   "data-market-platform",
   "real-estate-admin-map"
@@ -645,7 +684,7 @@ export const experienceSummary = [
 ];
 
 export const miniMesAiCase = {
-  description: "진행 중인 Mini MES에서는 미확정 업무 정책을 AI가 임의로 결정하지 못하도록 작업 규칙을 설계하고 있습니다."
+  description: "Mini MES에서는 업무 규칙·DB·상태 전이를 먼저 정의하고 AGENTS.md로 Agent 작업 기준을 고정했습니다. Codex의 구현 결과는 문서와 Source를 대조해 검토하며, 미확정 정책과 최종 판단은 개발자가 맡습니다."
 };
 
 export const realEstateFeature = {

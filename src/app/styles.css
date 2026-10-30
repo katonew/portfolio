@@ -10,6 +10,154 @@
   --header-height: 68px;
 }
 
+/* Mini MES: existing editorial sections, with screenshots as evidence. */
+.mes-home-screen,
+.mes-screen {
+  min-width: 0;
+  margin: 0;
+}
+
+.mes-home-screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 620px;
+  object-fit: contain;
+  object-position: top center;
+  background: var(--surface-muted);
+}
+
+.mes-home-screen figcaption,
+.mes-screen figcaption {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.mes-screen figcaption strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+  font-size: 17px;
+}
+
+.mes-detail-page .mes-screen {
+  margin: 32px 0 56px;
+}
+
+.mes-screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+}
+
+.mes-overview-screen img {
+  max-height: 900px;
+  object-fit: contain;
+  background: var(--surface-muted);
+}
+
+.mes-focus {
+  margin: 22px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.9;
+}
+
+.mes-actions,
+.mes-detail-page .featured-project-link,
+.portfolio-home .featured-project-primary .featured-project-link,
+.case-source-links,
+.mes-footer .featured-project-link {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+}
+
+.mes-process,
+.mes-document-flow {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 28px 0;
+  gap: 16px 0;
+}
+
+.mes-process li,
+.mes-document-flow li {
+  padding: 8px 20px 8px 0;
+  line-height: 1.8;
+}
+
+.mes-process li:not(:last-child)::after,
+.mes-document-flow li:not(:last-child)::after {
+  content: "→";
+  margin-left: 20px;
+  color: var(--muted);
+}
+
+.mes-process li span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.mes-scope,
+.mes-documents {
+  margin: 28px 0;
+}
+
+.mes-scope > div,
+.mes-documents > div {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(0, 3fr);
+  gap: 24px;
+  padding: 22px 0;
+  border-top: 1px solid var(--line);
+}
+
+.mes-scope dt,
+.mes-documents dt {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.mes-scope dd,
+.mes-documents dd {
+  margin: 0;
+}
+
+.mes-rules,
+.mes-workflow {
+  padding-left: 24px;
+}
+
+.mes-rules li,
+.mes-workflow li {
+  margin: 0 0 22px;
+  padding-left: 8px;
+}
+
+.mes-workflow h3 {
+  margin-bottom: 8px;
+}
+
+.mes-detail-page section[id] {
+  scroll-margin-top: calc(var(--header-height) + 24px);
+}
+
+@media (max-width: 860px) {
+  .mes-home-screen img { max-height: 520px; }
+  .mes-scope > div,
+  .mes-documents > div {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
 * {
   box-sizing: border-box;
 }

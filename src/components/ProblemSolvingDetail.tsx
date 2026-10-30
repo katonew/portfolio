@@ -17,7 +17,9 @@ export function ProblemSolvingDetail({ item, project }: { item: ProblemSolving; 
       <section className="cms-case" aria-labelledby="evidence"><h2 id="evidence">Evidence / Verification</h2>
         {project.demo && <div className="featured-project-link"><Link className="text-link" href={project.demo.href}>{project.demo.label} →</Link></div>}
         <ul className="cms-verification-list">{item.verification.map((evidence) => <li key={evidence}>{evidence}</li>)}</ul>
+        {item.sources && <div className="featured-project-link case-source-links">{item.sources.map((source) => <a className="text-link" key={source.href} href={source.href}>{source.label} ↗</a>)}</div>}
       </section>
+      {item.limitations && <section className="cms-case" aria-labelledby="limitations"><h2 id="limitations">Limitations</h2><ul className="cms-technical-details">{item.limitations.map((limit) => <li key={limit}>{limit}</li>)}</ul></section>}
       {item.aiWorkflow && <section className="cms-case" aria-labelledby="ai-workflow"><h2 id="ai-workflow">AI Workflow · Supporting Evidence</h2>
         <p>{item.aiWorkflow.summary}</p>
         <div className="cms-case-implementation"><h3>AI가 수행한 일</h3><ul className="cms-technical-details">{item.aiWorkflow.aiTasks.map((task) => <li key={task}>{task}</li>)}</ul></div>

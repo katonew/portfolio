@@ -14,7 +14,7 @@ import {
   selectedProjectSlugs,
   selectedProjectSummaries
 } from "@/data/profile";
-import { getProjectProblemSolving, getSelectedProblemSolving } from "@/lib/problem-solving";
+import { getSelectedProblemSolving } from "@/lib/problem-solving";
 
 // Home은 경력 흐름만 요약하고, 프로젝트별 담당 범위와 기술은 Resume에 유지합니다.
 const careerSummaryById: Record<string, string> = {
@@ -41,7 +41,6 @@ export default function Home() {
   });
   const stackGroups = profile.techContexts.filter((context) => context.category !== "AI");
   const problemSolvingCases = getSelectedProblemSolving();
-  const aiWorkflowCase = getProjectProblemSolving("enterprise-cms-erp").find((item) => item.aiWorkflow);
 
   return (
     <main className="portfolio-home">
@@ -92,30 +91,32 @@ export default function Home() {
 
       <div className="home-band projects-band">
         <div className="container">
-          <Section id="selected-projects" eyebrow="SELECTED WORK" title="대표 프로젝트" description="실제 업무에서 맡았던 시스템과 해결했던 핵심 문제입니다.">
+          <Section id="selected-projects" eyebrow="SELECTED WORK" title="대표 프로젝트" description="직접 설계·구현한 개인 프로젝트와 기업 업무 시스템 개발 경험입니다.">
             <div className="featured-projects">
               {featuredProjects.map((project) => (
-                <article className={`featured-project${project.slug === "enterprise-cms-erp" ? " featured-project-primary" : ""}`} key={project.slug}>
-                  {project.slug === "enterprise-cms-erp" ? (
+                <article className={`featured-project${project.slug === "mini-mes" ? " featured-project-primary" : ""}`} key={project.slug}>
+                  {project.slug === "mini-mes" ? (
                     <>
                       <div className="project-overview">
                         <p className="project-category">{project.card.category}</p>
                         <h3>{project.card.title}</h3>
                         <p className="featured-summary">{project.card.description}</p>
                         <p className="project-stack">{project.card.stack.join(" · ")}</p>
+                        <p className="mes-focus">LOT Traceability · Inventory Flow<br />Quality Inspection · Transaction Consistency</p>
                         <div className="featured-project-link">
-                          {project.demo && <p><Link className="text-link detail-link" href={project.demo.href}>{project.demo.label} →</Link></p>}
+                          {project.demo && <Link className="text-link detail-link" href={project.demo.href}>{project.demo.label} ↗</Link>}
+                          {project.github && <a className="text-link detail-link" href={project.github}>GitHub ↗</a>}
                           <Link className="text-link detail-link" href={`/projects/${project.slug}`} aria-label={`${project.card.title} 상세 보기`}>
                             <span className="cta-label">프로젝트 상세 <span className="cta-arrow" aria-hidden="true">↗</span></span>
                           </Link>
                         </div>
                       </div>
-                      <div className="project-message">
-                        <p className="project-statement">
-                          {project.card.statement.map((line) => <span key={line}>{line}</span>)}
-                        </p>
-                        <ProjectEvidence evidence={project.card.evidence} />
-                      </div>
+                      <figure className="mes-home-screen">
+                        <Link href="/projects/mini-mes/" aria-label="Mini MES 화면과 프로젝트 상세 보기">
+                          <Image src="/mini-mes/01-dashboard.png" alt="사이드바를 포함한 Mini MES 생산 현황 대시보드" width={1585} height={3101} sizes="(max-width: 860px) 100vw, 620px" />
+                        </Link>
+                        <figcaption>생산 현황 · 작업지시 상태, 누적 생산량, 양품률과 최종검사 현황을 함께 조회합니다.</figcaption>
+                      </figure>
                     </>
                   ) : (
                     <>
@@ -156,7 +157,7 @@ export default function Home() {
 
       <div className="home-band solved-band">
         <div className="container">
-          <Section id="problem-solving" title="업무에서 해결한 문제">
+          <Section id="problem-solving" title="설계와 구현에서 해결한 문제">
             <div className="trouble-grid">
               {problemSolvingCases.map((item) => (
                 <article className="trouble-item" key={item.title}>
@@ -192,7 +193,7 @@ export default function Home() {
               </div>
             </div>
             <p className="ai-case-note">{miniMesAiCase.description}</p>
-            {aiWorkflowCase && <div className="featured-project-link"><Link className="text-link" href={`/problem-solving/${aiWorkflowCase.slug}/#ai-workflow`}>CMS 공개 재구현의 판단·AI 작업 기록 →</Link></div>}
+            <div className="featured-project-link"><Link className="text-link" href="/projects/mini-mes/#ai-workflow">Mini MES의 업무 규칙·Agent 통제·검증 과정 →</Link></div>
           </Section>
         </div>
       </div>

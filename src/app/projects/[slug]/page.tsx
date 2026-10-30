@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProjectDetailTemplate } from "@/components/ProjectDetailTemplate";
+import { MiniMesProjectDetail } from "@/components/MiniMesProjectDetail";
 import { getProject, getProjectSlugs } from "@/lib/projects";
 
 type ProjectPageProps = {
@@ -30,5 +31,5 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     notFound();
   }
 
-  return <ProjectDetailTemplate project={project} />;
+  return project.slug === "mini-mes" ? <MiniMesProjectDetail project={project} /> : <ProjectDetailTemplate project={project} />;
 }

@@ -5,7 +5,7 @@ import styles from "./projects.module.css";
 
 export const metadata: Metadata = {
   title: "Projects | 권태형",
-  description: "업무 시스템 개발, 레거시 유지보수, 서버 이전 프로젝트와 담당 범위"
+  description: "Mini MES 개인 설계·구현과 기업 업무 시스템 개발, 유지보수·서버 이전 프로젝트"
 };
 
 type ArchiveProject = ReturnType<typeof getArchiveProjects>[number];
@@ -21,7 +21,7 @@ function ProjectRow({ project, summary }: { project: ArchiveProject; summary?: S
       </div>
       <dl className={styles.metadata}>
         {project.period !== null && <div><dt>수행 기간</dt><dd>{project.period}</dd></div>}
-        <div><dt>소속</dt><dd>{project.companyLabel}</dd></div>
+        <div><dt>{project.careerId === null ? "구분" : "소속"}</dt><dd>{project.companyLabel}</dd></div>
       </dl>
       <div className={styles.projectFooter}>
         <p className={styles.stack}>{(summary ? summary.stack : project.stack).join(" · ")}</p>
