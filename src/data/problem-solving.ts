@@ -12,6 +12,7 @@ export type ProblemSolving = {
   verification: string[];
   limitations?: string[];
   sources?: { label: string; href: string }[];
+  relatedEvidence?: { label: string; href: string }[];
   aiWorkflow?: { summary: string; aiTasks: string[]; developerDecisions: string[]; verification: string };
 };
 
@@ -19,6 +20,10 @@ export type ProblemSolving = {
 export const problemSolvingCases: ProblemSolving[] = [
   {
     slug: "mes-material-idempotency",
+    relatedEvidence: [
+      { label: "소비·반환 화면", href: "/projects/mini-mes/#mes-evidence-material" },
+      { label: "BOM·순소비 비교", href: "/projects/mini-mes/#mes-evidence-bom" }
+    ],
     projectSlug: "mini-mes",
     keyword: "MES / INVENTORY CONSISTENCY",
     title: "원자재 소비·반환의 멱등성과 재고 원자성",
@@ -48,6 +53,7 @@ export const problemSolvingCases: ProblemSolving[] = [
   },
   {
     slug: "mes-work-order-lock",
+    relatedEvidence: [{ label: "관련 생산·LOT 화면", href: "/projects/mini-mes/#mes-evidence-trace" }],
     projectSlug: "mini-mes",
     keyword: "MES / CONCURRENCY BOUNDARY",
     title: "WorkOrder 부모 잠금으로 생산실적·완료 처리 직렬화",
@@ -76,6 +82,10 @@ export const problemSolvingCases: ProblemSolving[] = [
   },
   {
     slug: "mes-lot-traceability",
+    relatedEvidence: [
+      { label: "LOT 생산 근거", href: "/projects/mini-mes/#mes-evidence-trace" },
+      { label: "원자재 이력", href: "/projects/mini-mes/#mes-evidence-material" }
+    ],
     projectSlug: "mini-mes",
     keyword: "MES / HISTORICAL TRACEABILITY",
     title: "완제품 LOT에서 생산·원자재·품질 이력 역추적",
@@ -98,8 +108,7 @@ export const problemSolvingCases: ProblemSolving[] = [
     ],
     limitations: ["조회 대상은 시스템에 저장된 업무 이력입니다. 물리적 원자재 사용 사실이나 개별 제품 시리얼 단위 추적을 보증하지 않습니다.", "완제품 LOT 기준 역추적 범위이며 원자재 LOT 정방향 추적·LOT 분할·병합을 구현 완료로 표현하지 않습니다."],
     sources: [
-      { label: "LotTraceService", href: "https://github.com/katonew/mini_mes/blob/main/src/main/java/com/taehyung/mes/trace/LotTraceService.java" },
-      { label: "업무 규칙과 실제 화면", href: "/projects/mini-mes/#product-screens" }
+      { label: "LotTraceService", href: "https://github.com/katonew/mini_mes/blob/main/src/main/java/com/taehyung/mes/trace/LotTraceService.java" }
     ]
   },
   {

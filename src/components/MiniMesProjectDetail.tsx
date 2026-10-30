@@ -14,11 +14,17 @@ const documents = [
 ];
 
 const screens = [
-  { file: "11-traceability-summary.png", width: 1296, height: 1458, variant: "trace", title: "완제품 LOT의 생산 근거", caption: "완제품 LOT에서 당시 작업지시와 확정 Routing, 누적 생산실적을 역으로 확인합니다." },
-  { file: "12-traceability-materials.png", width: 1296, height: 1908, variant: "material", title: "실제 소비와 연결된 반환", caption: "원소비에 연결된 반환을 확인하고, 원자재 LOT별 소비·반환·순소비를 집계합니다." },
-  { file: "12-traceability-materials.png", width: 1296, height: 1908, variant: "bom", title: "확정 BOM의 예상량과 실제 순소비", caption: "당시 확정 BOM의 예상 소요량과 실제 소비에서 반환을 뺀 순소비를 비교합니다." },
-  { file: "10-quality-inspection-core.png", width: 1296, height: 741, variant: "quality", title: "확정 대상에 대한 회차별 품질검사", caption: "완료 시 확정한 검사 대상량을 기준으로 회차별 합격·불합격 수량을 누적합니다." }
+  { file: "11-traceability-summary.png", width: 1296, height: 1458, variant: "trace", group: "production", title: "완제품 LOT의 생산 근거", caption: "완제품 LOT에서 당시 작업지시와 확정 Routing, 누적 생산실적을 역으로 확인합니다." },
+  { file: "12-traceability-materials.png", width: 1296, height: 1908, variant: "material", group: "material", title: "실제 소비와 연결된 반환", caption: "원소비에 연결된 반환을 확인하고, 원자재 LOT별 소비·반환·순소비를 집계합니다." },
+  { file: "12-traceability-materials.png", width: 1296, height: 1908, variant: "bom", group: "material", title: "확정 BOM의 예상량과 실제 순소비", caption: "당시 확정 BOM의 예상 소요량과 실제 소비에서 반환을 뺀 순소비를 비교합니다." },
+  { file: "10-quality-inspection-core.png", width: 1296, height: 741, variant: "quality", group: "quality", title: "확정 대상에 대한 회차별 품질검사", caption: "완료 시 확정한 검사 대상량을 기준으로 회차별 합격·불합격 수량을 누적합니다." }
 ] as const;
+
+const evidenceGroups = [
+  { id: "production", title: "Production Evidence" },
+  { id: "material", title: "Material Traceability" },
+  { id: "quality", title: "Quality Inspection" }
+];
 
 const rules = [
   "작업지시당 완제품 LOT은 최대 1개입니다. 최초 생산실적에서 생성하고 후속 실적은 같은 LOT에 연결합니다.",
@@ -37,15 +43,19 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
       <div className="container">
         <Link className="back-link" href="/projects/">프로젝트 목록으로 돌아가기</Link>
         <header className="cms-project-hero">
-          <p className="eyebrow">Side Project · Independent Design &amp; Implementation</p>
-          <h1>Mini MES</h1>
-          <p className="cms-hero-description">{project.oneLine}</p>
-          <p className="project-stack">{project.stack.join(" · ")}</p>
-          <nav className="featured-project-link mes-actions" aria-label="Mini MES 프로젝트 증거">
-            {project.demo && <a className="text-link primary-link" href={project.demo.href}>Live Demo ↗</a>}
-            {project.github && <a className="text-link" href={project.github}>GitHub ↗</a>}
-            <a className="text-link" href="#product-screens">화면과 업무 규칙 ↓</a>
-          </nav>
+          <div>
+            <p className="eyebrow">Side Project · Independent Design &amp; Implementation</p>
+            <h1>Mini MES</h1>
+            <p className="cms-hero-description">{project.oneLine}</p>
+          </div>
+          <div className="mes-hero-meta">
+            <p className="project-stack">{project.stack.join(" · ")}</p>
+            <nav className="featured-project-link mes-actions" aria-label="Mini MES 프로젝트 증거">
+              {project.demo && <a className="text-link primary-link" href={project.demo.href}>Live Demo ↗</a>}
+              {project.github && <a className="text-link" href={project.github}>GitHub ↗</a>}
+              <a className="text-link" href="#product-screens">화면과 업무 규칙 ↓</a>
+            </nav>
+          </div>
         </header>
 
         <ProjectEvidenceImage
@@ -85,13 +95,16 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
         <section className="cms-case" id="product-screens" aria-labelledby="mes-screens">
           <p className="case-study-label">Product Screens · Evidence</p>
           <h2 id="mes-screens">화면에서 확인하는 업무 규칙</h2>
-          {screens.map((screen) => <ProjectEvidenceImage
+          {evidenceGroups.map((group) => <div className="mes-evidence-group" key={group.id}>
+            <h3>{group.title}</h3>
+            {screens.filter((screen) => screen.group === group.id).map((screen) => <ProjectEvidenceImage
             key={screen.variant}
             src={`/mini-mes/${screen.file}`}
             alt={screen.title} title={screen.title}
             width={screen.width} height={screen.height} variant={screen.variant}
             caption={screen.caption}
           />)}
+          </div>)}
         </section>
 
         <section className="cms-case" aria-labelledby="mes-rules">
@@ -100,9 +113,29 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
           <ol className="mes-rules">{rules.map((rule) => <li key={rule}>{rule}</li>)}</ol>
         </section>
 
+        <section className="cms-case mes-problem-section" aria-labelledby="mes-problems">
+          <p className="case-study-label">Problem Solving · Depth</p>
+          <h2 id="mes-problems">제조 흐름 안의 세 가지 설계 판단</h2>
+          <ol className="mes-problem-list">
+            {cases.map((item, index) => <li key={item.slug}>
+              <span className="mes-case-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+              <div>
+                <h3>{item.title}</h3>
+                <p className="mes-case-summary">{item.summary}</p>
+                <dl className="mes-case-decision"><dt>Decision</dt><dd>{item.decision}</dd></dl>
+                <nav className="mes-related-evidence" aria-label={`${item.title} 상세와 관련 업무 화면`}>
+                  <Link className="text-link" href={`/problem-solving/${item.slug}/`}>문제·구현·검증 보기 →</Link>
+                  {item.relatedEvidence?.map((evidence) => <Link className="text-link" key={evidence.href} href={evidence.href}>{evidence.label} ↓</Link>)}
+                </nav>
+              </div>
+            </li>)}
+          </ol>
+        </section>
+
         <section className="cms-case" aria-labelledby="mes-architecture">
           <h2 id="mes-architecture">Architecture / Data Design</h2>
           <p>도메인별 모듈형 모놀리스에서 Controller는 요청·응답, Service는 업무 규칙·상태 전이·트랜잭션, MyBatis Mapper는 조회·변경을 담당합니다. Thymeleaf와 JavaScript로 화면을 연결했습니다.</p>
+          <ol className="mes-document-flow mes-design-flow"><li>Business Rules</li><li>ERD</li><li>Physical DB Design</li><li>schema.sql</li><li>Service / Transaction</li><li>Test / Demo</li></ol>
           <ol className="cms-flow"><li>Controller</li><li>Service / Transaction</li><li>MyBatis Mapper XML</li><li>MySQL</li></ol>
           <dl className="mes-scope">
             <div><dt>DB가 보장하는 규칙</dt><dd>작업지시·LOT·원장 사이의 FK, 작업지시당 완제품 LOT의 UNIQUE, 요청 scope/key와 결과 Receipt의 UNIQUE, 수량 양수·양품+불량 등 행 내부 CHECK를 schema.sql에 정의했습니다.</dd></div>
@@ -112,13 +145,7 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
           </dl>
         </section>
 
-        <section className="cms-case" aria-labelledby="mes-problems">
-          <p className="case-study-label">Problem Solving · Depth</p>
-          <h2 id="mes-problems">제조 흐름 안의 세 가지 설계 판단</h2>
-          {cases.map((item) => <div className="cms-case-implementation" key={item.slug}><h3><Link className="text-link" href={`/problem-solving/${item.slug}/`}>{item.title} →</Link></h3><p>{item.summary}</p></div>)}
-        </section>
-
-        <section className="cms-case" aria-labelledby="mes-documents">
+        <section className="cms-case mes-supporting-section" aria-labelledby="mes-documents">
           <p className="case-study-label">PRD → Design → Implementation</p>
           <h2 id="mes-documents">요구사항을 코드의 판단 기준으로</h2>
           <ol className="mes-document-flow"><li>목표·범위 결정</li><li>PRD</li><li>Business Rules</li><li>ERD</li><li>Physical DB Design</li><li>DDL</li><li>구현·검증</li><li>규칙 보완</li></ol>
@@ -126,7 +153,7 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
           <dl className="mes-documents">{documents.map((doc) => <div key={doc.file}><dt><a className="text-link" href={`${sourceRoot}${doc.path}`}>{doc.file} ↗</a></dt><dd>{doc.role}</dd></div>)}</dl>
         </section>
 
-        <section className="cms-case" id="ai-workflow" aria-labelledby="mes-ai">
+        <section className="cms-case mes-supporting-section" id="ai-workflow" aria-labelledby="mes-ai">
           <p className="case-study-label">AI-assisted Engineering · Supporting Evidence</p>
           <h2 id="mes-ai">판단 기준을 먼저 정하고, Agent의 작업을 통제했습니다</h2>
           <p>업무 정책·데이터 구조·트랜잭션·상태 전이의 최종 결정자는 개발자입니다. AI는 문서화·구현·코드 탐색과 검토를 보조하며, 미확정 정책을 임의로 채우지 않도록 AGENTS.md에 기준을 고정했습니다.</p>
@@ -140,7 +167,7 @@ export function MiniMesProjectDetail({ project }: { project: Project }) {
           <div className="cms-case-implementation"><h3>실제 검토와 수정 기록</h3><p>작업지시 폼 오류 화면에서 선택값이 사라지고 공통 pageshow 처리가 업무상 비활성 버튼을 활성화하는 문제를 Controller·Thymeleaf·JavaScript 대조로 확인했습니다. 제출 ID와 등록 가능 상태를 보존하도록 수정한 기록이 있습니다. 이 기록의 브라우저 재현·테스트 실행은 미확인으로 남깁니다.</p><a className="text-link" href={`${sourceRoot}docs/ai/failures/work-order-form-state-preservation.md`}>AI 제안의 문제·검토·수정 기록 ↗</a></div>
         </section>
 
-        <section className="cms-case" aria-labelledby="mes-tools">
+        <section className="cms-case mes-supporting-section" aria-labelledby="mes-tools">
           <h2 id="mes-tools">Engineering / Portfolio Production Workflow</h2>
           <dl className="mes-scope">
             <div><dt>Engineering · Graphify</dt><dd>graph.json과 탐색 우선 규칙, hook 설정이 존재합니다. 로컬 query/path 조회로 Controller·Service·Mapper 참조 관계를 확인했습니다. 그래프는 관련 Source를 찾는 보조 자료로 사용하고 실제 규칙은 원문 코드에서 검토합니다. 이 근거를 Graphify MCP 사용 이력으로 확대하지 않습니다.</dd></div>

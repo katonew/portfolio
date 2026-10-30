@@ -3,7 +3,7 @@ import type { ProblemSolving } from "@/data/problem-solving";
 import type { Project } from "@/data/profile";
 
 export function ProblemSolvingDetail({ item, project }: { item: ProblemSolving; project: Project }) {
-  return <main className="detail-page cms-detail-page"><div className="container">
+  return <main className={`detail-page cms-detail-page${project.slug === "mini-mes" ? " mes-problem-detail" : ""}`}><div className="container">
     <Link className="back-link" href={`/projects/${project.slug}/`}>{project.title}로 돌아가기</Link>
     <header className="cms-project-hero"><p className="eyebrow">Problem Solving · {item.keyword}</p><h1>{item.title}</h1><p className="cms-hero-description">{item.summary}</p></header>
     <article>
@@ -18,6 +18,7 @@ export function ProblemSolvingDetail({ item, project }: { item: ProblemSolving; 
         {project.demo && <div className="featured-project-link"><Link className="text-link" href={project.demo.href}>{project.demo.label} →</Link></div>}
         <ul className="cms-verification-list">{item.verification.map((evidence) => <li key={evidence}>{evidence}</li>)}</ul>
         {item.sources && <div className="featured-project-link case-source-links">{item.sources.map((source) => <a className="text-link" key={source.href} href={source.href}>{source.label} ↗</a>)}</div>}
+        {item.relatedEvidence && <nav className="mes-related-evidence" aria-label="관련 업무 화면"><span>Related Evidence</span>{item.relatedEvidence.map((evidence) => <Link className="text-link" key={evidence.href} href={evidence.href}>{evidence.label} →</Link>)}</nav>}
       </section>
       {item.limitations && <section className="cms-case" aria-labelledby="limitations"><h2 id="limitations">Limitations</h2><ul className="cms-technical-details">{item.limitations.map((limit) => <li key={limit}>{limit}</li>)}</ul></section>}
       {item.aiWorkflow && <section className="cms-case" aria-labelledby="ai-workflow"><h2 id="ai-workflow">AI Workflow · Supporting Evidence</h2>

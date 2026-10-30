@@ -24,19 +24,18 @@ type ProjectEvidenceImageProps = {
   priority?: boolean;
 };
 
-export function ProjectEvidenceImage({ src, alt, width, height, variant, caption, title, href = src, home = false, priority = false }: ProjectEvidenceImageProps) {
+export function ProjectEvidenceImage({ src, alt, width, height, variant, caption, title, href, home = false, priority = false }: ProjectEvidenceImageProps) {
   const crop = crops[variant];
   const frameStyle = {
     "--evidence-ratio": `${width} / ${crop.height}`,
     "--evidence-offset": `${-crop.top / height * 100}%`
   } as CSSProperties;
+  const image = <Image src={src} alt={alt} width={width} height={height} sizes={home ? "(max-width: 860px) 100vw, 620px" : variant === "dashboard" ? "(max-width: 860px) 100vw, 1080px" : "(max-width: 860px) 100vw, 960px"} priority={priority} />;
 
   return (
-    <figure className={`mes-evidence mes-evidence-${variant}${home ? " mes-home-screen" : ""}`}>
-      <Link className="mes-evidence-frame" href={href} style={frameStyle} aria-label={`${alt} · ${home ? "프로젝트 상세 보기" : "원본 이미지 보기"}`}>
-        <Image src={src} alt={alt} width={width} height={height} sizes={home ? "(max-width: 860px) 100vw, 620px" : "(max-width: 860px) 100vw, 960px"} priority={priority} />
-      </Link>
-      <figcaption>{title && <strong>{title}</strong>}{caption}{!home && <Link className="mes-evidence-original text-link" href={src}>원본 보기 ↗</Link>}</figcaption>
+    <figure id={`mes-evidence-${variant}`} className={`mes-evidence mes-evidence-${variant}${home ? " mes-home-screen" : ""}`}>
+      {href ? <Link className="mes-evidence-frame" href={href} style={frameStyle} aria-label={`${alt} · 프로젝트 상세 보기`}>{image}</Link> : <div className="mes-evidence-frame" style={frameStyle}>{image}</div>}
+      <figcaption>{title && <strong>{title}</strong>}{caption}</figcaption>
     </figure>
   );
 }

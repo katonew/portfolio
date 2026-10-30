@@ -102,15 +102,7 @@ export default function Home() {
                         <p className="project-category">{project.card.category}</p>
                         <h3>{project.card.title}</h3>
                         <p className="featured-summary">{project.card.description}</p>
-                        <p className="project-stack">{project.card.stack.join(" · ")}</p>
-                        <p className="mes-focus">LOT Traceability · Inventory Flow<br />Quality Inspection · Transaction Consistency</p>
-                        <div className="featured-project-link">
-                          {project.demo && <Link className="text-link detail-link" href={project.demo.href}>{project.demo.label} ↗</Link>}
-                          {project.github && <a className="text-link detail-link" href={project.github}>GitHub ↗</a>}
-                          <Link className="text-link detail-link" href={`/projects/${project.slug}`} aria-label={`${project.card.title} 상세 보기`}>
-                            <span className="cta-label">프로젝트 상세 <span className="cta-arrow" aria-hidden="true">↗</span></span>
-                          </Link>
-                        </div>
+
                       </div>
                       <ProjectEvidenceImage
                         src="/mini-mes/01-dashboard.png"
@@ -119,6 +111,19 @@ export default function Home() {
                         caption="작업지시 상태와 누적 생산·양품률·최종검사 현황을 같은 업무 흐름에서 조회합니다."
                         href="/projects/mini-mes/" home
                       />
+                      <div className="mes-project-footer">
+                        <div className="featured-project-link">
+                          {project.demo && <Link className="text-link detail-link" href={project.demo.href}>{project.demo.label} ↗</Link>}
+                          {project.github && <a className="text-link detail-link" href={project.github}>GitHub ↗</a>}
+                          <Link className="text-link detail-link" href={`/projects/${project.slug}`} aria-label={`${project.card.title} 상세 보기`}>
+                            <span className="cta-label">프로젝트 상세 <span className="cta-arrow" aria-hidden="true">↗</span></span>
+                          </Link>
+                        </div>
+                        <div className="mes-project-technologies">
+                          <p className="project-stack">{project.card.stack.join(" · ")}</p>
+                          <p className="mes-focus">LOT Traceability · Inventory Flow<br />Quality Inspection · Transaction Consistency</p>
+                        </div>
+                      </div>
                     </>
                   ) : (
                     <>
