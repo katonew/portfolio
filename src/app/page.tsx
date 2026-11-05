@@ -61,11 +61,11 @@ export default function Home() {
               </dl>
               <nav className="featured-project-link hero-actions" aria-label="전체 프로젝트와 이력서">
                 <Link className="text-link primary-link hero-action" href="/projects/">
-                  <span className="cta-label">전체 프로젝트 보기 <span className="cta-arrow" aria-hidden="true">↗</span></span>
+                  <span className="cta-label">전체 프로젝트 보기</span>
                   <span className="hero-action-description">수행한 전체 프로젝트</span>
                 </Link>
                 <Link className="text-link primary-link hero-action" href="/resume/">
-                  <span className="cta-label">이력서 보기 <span className="cta-arrow" aria-hidden="true">↗</span></span>
+                  <span className="cta-label">이력서 보기</span>
                   <span className="hero-action-description">경력 · 기술 · 업무 방식</span>
                 </Link>
               </nav>
@@ -102,6 +102,13 @@ export default function Home() {
                         <p className="project-category">{project.card.category}</p>
                         <h3>{project.card.title}</h3>
                         <p className="featured-summary">{project.card.description}</p>
+                        <div className="featured-project-link">
+                          {project.demo && <Link className="text-link detail-link" href={project.demo.href}>{project.demo.label} ↗</Link>}
+                          {project.github && <a className="text-link detail-link" href={project.github}>GitHub ↗</a>}
+                          <Link className="text-link detail-link" href={`/projects/${project.slug}`} aria-label={`${project.card.title} 상세 보기`}>
+                            <span className="cta-label">프로젝트 상세</span>
+                          </Link>
+                        </div>
 
                       </div>
                       <ProjectEvidenceImage
@@ -112,13 +119,6 @@ export default function Home() {
                         href="/projects/mini-mes/" home
                       />
                       <div className="mes-project-footer">
-                        <div className="featured-project-link">
-                          {project.demo && <Link className="text-link detail-link" href={project.demo.href}>{project.demo.label} ↗</Link>}
-                          {project.github && <a className="text-link detail-link" href={project.github}>GitHub ↗</a>}
-                          <Link className="text-link detail-link" href={`/projects/${project.slug}`} aria-label={`${project.card.title} 상세 보기`}>
-                            <span className="cta-label">프로젝트 상세 <span className="cta-arrow" aria-hidden="true">↗</span></span>
-                          </Link>
-                        </div>
                         <div className="mes-project-technologies">
                           <p className="project-stack">{project.card.stack.join(" · ")}</p>
                           <p className="mes-focus">LOT Traceability · Inventory Flow<br />Quality Inspection · Transaction Consistency</p>
@@ -139,12 +139,12 @@ export default function Home() {
                         {project.demo && (
                           <p>
                             <Link className="text-link detail-link" href={project.demo.href} aria-label={`${project.card.title} ${project.demo.label}`}>
-                              <span className="cta-label">{project.demo.label} <span className="cta-arrow" aria-hidden="true">↗</span></span>
+                              <span className="cta-label">{project.demo.label}</span>
                             </Link>
                           </p>
                         )}
                         <Link className="text-link detail-link" href={`/projects/${project.slug}`} aria-label={`${project.card.title} 상세 보기`}>
-                          <span className="cta-label">프로젝트 상세 <span className="cta-arrow" aria-hidden="true">↗</span></span>
+                          <span className="cta-label">프로젝트 상세</span>
                         </Link>
                       </div>
                     </>
@@ -154,7 +154,7 @@ export default function Home() {
             </div>
             <div className="featured-project-link section-next">
               <Link className="text-link primary-link" href="/projects/">
-                <span className="cta-label">전체 프로젝트 보기 <span className="cta-arrow" aria-hidden="true">↗</span></span>
+                <span className="cta-label">전체 프로젝트 보기</span>
               </Link>
               <p>수행한 프로젝트 전체를 한눈에 확인합니다.</p>
             </div>
@@ -228,7 +228,7 @@ export default function Home() {
             </div>
             <div className="featured-project-link section-next">
               <Link className="text-link primary-link" href="/resume/">
-                <span className="cta-label">전체 이력 보기 <span className="cta-arrow" aria-hidden="true">↗</span></span>
+                <span className="cta-label">전체 이력 보기</span>
               </Link>
               <p>회사별 프로젝트 · 사용 기술 · 업무 방식을 확인합니다.</p>
             </div>

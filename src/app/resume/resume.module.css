@@ -1,8 +1,8 @@
 .page {
   --resume-body-size: 15px;
   --resume-small-size: 13px;
-  --resume-name-size: 32px;
-  --resume-section-size: 22px;
+  --resume-name-size: 28px;
+  --resume-section-size: 20px;
   --resume-heading-size: 17px;
   background: var(--surface);
   padding: 48px 0 80px;
@@ -34,6 +34,8 @@
 
 .page p {
   margin-bottom: 12px;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .page a:focus-visible {
@@ -241,6 +243,30 @@
   .responsibilities {
     grid-template-columns: minmax(0, 1fr);
     gap: 20px;
+  }
+
+  .profile {
+    grid-template-columns: minmax(0, 1fr) 88px;
+    gap: 0 16px;
+  }
+
+  .identity {
+    display: contents;
+  }
+
+  .identity > * {
+    grid-column: 1 / -1;
+  }
+
+  .identity > .meta,
+  .identity > h1,
+  .identity > .role {
+    grid-column: 1;
+  }
+
+  .photo {
+    grid-column: 2;
+    grid-row: 1 / span 3;
   }
 
   .page :global(.contact-layout) {

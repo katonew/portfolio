@@ -1,6 +1,6 @@
 .page {
   background: var(--surface);
-  padding: 64px 0 96px;
+  padding: 48px 0 72px;
 }
 
 .document {
@@ -21,6 +21,8 @@
 .heading p {
   color: var(--muted);
   margin-bottom: 0;
+  word-break: keep-all;
+  text-wrap: pretty;
 }
 
 .section + .section {
@@ -42,8 +44,8 @@
 .project {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 220px;
-  gap: 20px 56px;
-  padding: 28px 0;
+  gap: 12px 40px;
+  padding: 24px 0;
   border-top: 1px solid var(--line);
 }
 
@@ -60,7 +62,7 @@
 }
 
 .selectedList .project {
-  padding: 32px 0;
+  padding: 24px 0;
 }
 
 .selectedList h3 {
@@ -70,7 +72,6 @@
 .scope {
   max-width: 66ch;
   margin-bottom: 0;
-  overflow-wrap: anywhere;
 }
 
 .sub {
@@ -99,12 +100,13 @@
   grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: baseline;
   gap: 16px;
 }
 
 .stack {
+  flex: 1 1 100%;
   min-width: 0;
   margin: 0;
   font-size: 13px;
@@ -118,6 +120,12 @@
   align-items: center;
   min-height: 44px;
   white-space: nowrap;
+}
+
+.scope,
+.sub {
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 @media screen {
@@ -157,8 +165,7 @@
   }
 
   .projectFooter {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 8px;
+    align-items: center;
+    gap: 8px 16px;
   }
 }

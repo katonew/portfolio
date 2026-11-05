@@ -18,7 +18,15 @@ export function Header() {
     updateHeight();
     const observer = new ResizeObserver(updateHeight);
     observer.observe(header);
+    // Direct hash navigation can run before hydration measures a wrapped header.
+    const frame = requestAnimationFrame(() => {
+      const target = document.querySelector<HTMLElement>(":target");
+      if (target && getComputedStyle(header).position === "sticky" && target.getBoundingClientRect().top < header.getBoundingClientRect().height) {
+        target.scrollIntoView({ block: "start", behavior: "instant" });
+      }
+    });
     return () => {
+      cancelAnimationFrame(frame);
       observer.disconnect();
       document.documentElement.style.removeProperty("--header-offset");
     };
