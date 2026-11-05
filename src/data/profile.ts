@@ -480,6 +480,73 @@ export const projects: Project[] = [
     featured: true
   },
   {
+    slug: "pds-sales-management",
+    title: "제약 영업관리 시스템 개발 및 유지보수",
+    period: null,
+    domain: "한국오츠카제약 PDS / 영업 활동 / CRM",
+    oneLine: "ASP Classic 기반 영업 대시보드를 신규 개발해 CALL 실적·고객 Coverage 조회와 차트 갱신을 연결했습니다.",
+    summary: "한국오츠카제약 PDS는 영업 담당자(MR)의 고객·CALL 활동·일정을 관리하는 업무 시스템입니다. 기존 메인 화면에 영업 대시보드를 새로 연결하고, CRM 수정 조건과 그룹별 점수 처리·고객 등급 표시·엑셀 출력을 유지보수했습니다.",
+    decisionPoints: [
+      "CALL 실적은 일정·고객별 활동·담당자·조직 데이터를 JOIN하고, CTE에서 일정별 활동을 묶은 뒤 일자별 COUNT·SUM으로 집계했습니다. 본부 평균은 소속 MR 수를 조회해 계산했습니다.",
+      "고객 Coverage는 담당 고객 수와 CALL 활동이 있는 고객 수를 각각 COUNT DISTINCT로 조회해 비율을 계산했습니다. 본부·팀·MR·병원 조건을 분모·분자에 반영하고 고객 Coverage의 활동 기간은 월 단위로 처리했습니다.",
+      "기존 DB 실행 함수로 조회한 지표·날짜 라벨·실적 배열을 ASP Classic에서 JSON으로 응답합니다."
+    ],
+    role: [
+      "영업 대시보드 신규 개발: ASP 조회·SQL 집계·JavaScript 차트 및 메인 화면 연동",
+      "기존 CRM 유지보수: PRO CALL 수정 조건·P-Score 복수 그룹·TES 표시·엑셀 출력 개선"
+    ],
+    implementations: [
+      "본부·팀·MR·병원 및 기간 조건으로 지표를 조회하고, 조직 선택에 따라 관련 선택 목록을 갱신했습니다.",
+      "차트 데이터는 Fetch API 기반 비동기 GET 요청으로 조회하고, Coverage와 평균 응답을 Promise.all로 받아 차트에 반영했습니다.",
+      "차트 표시 완료 콜백과 로딩 표시를 연결하고, 요청 타임아웃을 처리했습니다.",
+      "기존 일정 화면의 서버 측 include와 CALL 처리용 jQuery AJAX·XML 응답 흐름을 활용해 일정 기능을 연결했습니다."
+    ],
+    features: [
+      {
+        title: "PRO CALL · CALL 출처에 따른 수정 조건 분리",
+        description: "공통 수정 조건을 사용하던 화면에서 PRO 연계 CALL과 일반 CALL의 수정기한을 구분하도록 변경했습니다.",
+        flow: [
+          "조회 결과에 PRO 연계 여부를 추가하고, 주간 화면은 기존 휴일 계산을 유지하면서 PRO 10일·일반 5일 기준으로 분기했습니다.",
+          "일간 화면은 CALL별 PRO 여부를 저장·삭제 버튼 노출 조건에 반영했습니다. 코드에서 조회 결과가 주간 기간 계산과 일간 버튼 조건으로 전달되는 흐름을 확인했습니다."
+        ]
+      },
+      {
+        title: "추가 유지보수 · TES 고객 등급 표시와 엑셀 출력",
+        description: "기존 고객 관리 화면의 TES 등급 표시 분기를 변경하고, 엑셀 출력의 등급 변환과 열 구성을 수정했습니다.",
+        flow: [
+          "화면: 고객 등급 코드의 표시값 변환과 관련 JavaScript 처리를 수정했습니다.",
+          "엑셀: 등급 표시값 변환을 수정하고 출력 대상 열과 헤더·빈 목록의 colspan을 조정했습니다."
+        ]
+      }
+    ],
+    difficulties: [
+      "담당 고객과 실제 CALL 활동은 서로 다른 데이터이므로 고객 수와 활동 건수의 집계 단위를 구분해야 했습니다.",
+      "조직 선택 조건이 화면 요청에만 머무르지 않고 SQL 집계 조건과 차트 갱신까지 전달되도록 연결해야 했습니다."
+    ],
+    verification: [
+      "Git 변경 이력과 소스를 정적으로 확인한 구현 범위입니다. 기존 메인 화면·DB 실행 함수·일정 기능을 재사용했습니다."
+    ],
+    result: [
+      "영업 대시보드 신규 개발과 기존 CRM 업무 규칙·화면 오류 개선을 담당했습니다."
+    ],
+    stack: ["ASP Classic", "JavaScript", "AJAX", "SQL"],
+    stackContext: [
+      "ASP Classic · 기존 DB 실행 함수를 통한 SQL 조회와 JSON 응답 구성",
+      "SQL · JOIN·CTE·COUNT DISTINCT·일자별 집계",
+      "JavaScript · Fetch API 기반 차트 조회, 기존 jQuery AJAX 기반 일정 처리",
+      "기존 메인 화면·일정 마크업·공통 함수 재사용"
+    ],
+    flow: [
+      "조회 조건",
+      "SQL 조회·집계",
+      "ASP JSON 응답",
+      "JavaScript 비동기 처리",
+      "차트·지표 갱신"
+    ],
+    securityNote: "회사 원본 코드·내부 URL·계정·고객 정보·DB 접속 정보는 공개하지 않습니다. 구현 구조와 개인 변경 범위만 설명합니다.",
+    portfolioSentences: []
+  },
+  {
     slug: "server-migration",
     title: "기존 프로젝트의 서버 이전과 빌드·배포 구성",
     period: null,
@@ -556,6 +623,17 @@ export const selectedProjectSummaries = {
     },
     stack: ["Spring Boot", "JPA", "MySQL", "Vue"]
   },
+  "pds-sales-management": {
+    category: "한국오츠카제약 · PDS",
+    title: "제약 영업관리 시스템",
+    description: "CALL 실적·고객 Coverage 집계, 본부·팀·MR별 조회, 비동기 차트 갱신 및 기존 업무 규칙 개선",
+    statement: ["영업 대시보드를 신규 개발하고,", "실적 집계와 기존 CRM 업무 로직을 개선했습니다."],
+    evidence: {
+      kind: "flow" as const,
+      steps: ["조회 조건", "SQL 집계", "JSON 응답", "차트 갱신"]
+    },
+    stack: ["ASP Classic", "SQL", "JavaScript", "AJAX"]
+  },
   "real-estate-admin-map": {
     category: "MAP / PROPERTY",
     title: "부동산 관리자 시스템",
@@ -572,7 +650,7 @@ export const selectedProjectSummaries = {
 export const selectedProjectSlugs: (keyof typeof selectedProjectSummaries)[] = [
   "mini-mes",
   "enterprise-cms-erp",
-  "data-market-platform",
+  "pds-sales-management",
   "real-estate-admin-map"
 ];
 
@@ -610,10 +688,11 @@ export const careerTimeline: TimelineItem[] = [
       },
       {
         id: "otsuka-maintenance",
-        slug: null,
-        title: "한국오츠카제약 사내 시스템 유지보수",
-        description: "ASP Classic과 Spring Legacy 기반 기존 시스템의 영업 일정·지출·성과 관련 내부 페이지를 유지보수했습니다.",
-        stack: ["ASP Classic", "Spring Legacy"]
+        slug: "pds-sales-management",
+        title: "제약 영업관리 시스템 개발 및 유지보수",
+        description: "한국오츠카제약 PDS의 영업 대시보드(CALL 실적·고객 Coverage)를 신규 개발하고, PRO CALL 수정 조건·P-Score 복수 그룹·TES 표시 및 엑셀 출력을 개선했습니다.",
+        sub: "별도 경력 기록: Spring Legacy 기반 사내 시스템의 영업 일정·지출·성과 관련 내부 페이지 유지보수",
+        stack: ["ASP Classic", "JavaScript", "AJAX", "SQL"]
       },
       {
         id: "konkuk-orders",

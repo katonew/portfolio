@@ -234,6 +234,23 @@ export const problemSolvingCases: ProblemSolving[] = [
       "기존 기록에서 API 키 누락, 주소·필지 조회 또는 경계 조회 실패 시 상태 메시지를 표시하는 처리를 확인했습니다."
     ]
   },
+  {
+    slug: "pds-pscore-group-identity",
+    projectSlug: "pds-sales-management",
+    keyword: "PDS / LEGACY UI",
+    title: "P-Score 복수 그룹의 식별자 충돌 수정",
+    summary: "중복 HTML ID와 고정된 그룹 번호를 제거하고, 실제 그룹 인덱스로 일괄적용 버튼과 점수 선택 요소를 연결했습니다.",
+    problem: "복수 P-Group 화면에서 일괄적용 버튼이 같은 HTML ID를 사용하고, 점수 선택 요소와 이벤트 대상의 그룹 번호가 첫 번째 그룹으로 고정되어 있었습니다. 그룹별로 조작 대상을 구분할 수 있도록 식별 체계를 수정해야 했습니다.",
+    decision: "반복 버튼의 이벤트는 클래스 기반 위임 방식으로 처리하고, 개별 점수 선택 요소의 ID와 버튼의 data 속성에는 실제 그룹 인덱스를 반영했습니다. 기존 이벤트 처리 흐름을 유지하면서 그룹 식별 기준을 맞췄습니다.",
+    implementation: [
+      "반복되는 일괄적용 버튼의 중복 ID를 클래스로 변경하고, 클릭 이벤트 선택자도 클래스 기준으로 수정했습니다.",
+      "점수 선택 요소 ID와 버튼의 data 속성에 CALL·활동·그룹 인덱스를 반영했습니다.",
+      "이벤트에서 읽는 그룹 식별자가 해당 그룹의 점수 선택 요소를 가리키도록 연결했습니다."
+    ],
+    flow: ["그룹별 요소 생성", "클래스 기반 클릭 이벤트", "버튼의 그룹 식별자 조회", "해당 그룹의 점수 요소 선택"],
+    result: "수정 코드에서 버튼과 점수 선택 요소가 같은 그룹 인덱스를 사용하도록 연결된 것을 확인했습니다.",
+    verification: ["Git 변경분과 관련 마크업·이벤트 코드를 정적으로 대조했습니다."]
+  }
 ];
 
-export const selectedProblemSolvingSlugs = ["mes-material-idempotency", "mes-work-order-lock", "mes-lot-traceability", "cms-change-save", "cart-purchase-options", "parcel-selection-state"];
+export const selectedProblemSolvingSlugs = ["mes-material-idempotency", "mes-work-order-lock", "mes-lot-traceability", "cms-change-save", "cart-purchase-options", "parcel-selection-state", "pds-pscore-group-identity"];

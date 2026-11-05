@@ -174,7 +174,7 @@ export default function Home() {
                   </div>
                   <div className="case-content">
                     <p className="case-conclusion">{item.summary}</p>
-                    <Link className="text-link" href={`/problem-solving/${item.slug}/`}>판단과 구현 보기 →</Link>
+                    <Link className="text-link" href={item.projectSlug === "pds-sales-management" ? `/projects/${item.projectSlug}/#${item.slug}` : `/problem-solving/${item.slug}/`}>판단과 구현 보기 →</Link>
                   </div>
                 </article>
               ))}

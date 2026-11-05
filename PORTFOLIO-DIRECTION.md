@@ -13,7 +13,7 @@ Project를 하나의 Problem Solving으로 축소하지 않는다. 실무 기능
 
 ## 대표 프로젝트 — Mini MES
 
-- Selected Work는 Mini MES → CMS / ERP → Data Platform → Property 순서로 보여준다. Home에서 Mini MES는 전체 폭의 대표 영역과 실제 대시보드 이미지로 우선한다.
+- Selected Work는 Mini MES → CMS / ERP → 한국오츠카제약 PDS → Property 순서로 보여준다. Data Platform은 All Projects와 Resume에 유지한다. Home에서 Mini MES는 전체 폭의 대표 영역과 실제 대시보드 이미지로 우선한다.
 - Mini MES는 **Side Project / Independent Design & Implementation**이다. `projects`에 개인 프로젝트로 등록하되 `careerTimeline`과 회사 경력·재직 기간에 포함하지 않는다. CMS는 기업 업무 시스템 경험의 대표 프로젝트로 유지한다.
 - Mini MES 상세는 제조 흐름·구현 기능·업무 규칙·데이터 설계의 폭을 설명한다. 소비/반환 멱등성·WorkOrder 부모 잠금·LOT 역추적은 독립 Problem Solving으로 연결한다.
 - 공개 Demo와 실제 Screenshot을 설명·AI Workflow보다 앞에 둔다. 대시보드 전체 화면, LOT 생산 근거, 자재 비교, 품질검사의 네 화면만 사용하고 각 화면에 업무 규칙 캡션을 붙인다.
