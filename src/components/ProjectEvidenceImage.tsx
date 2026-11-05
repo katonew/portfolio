@@ -38,7 +38,10 @@ export function ProjectEvidenceImage({ id, sizes, src, alt, width, height, varia
   return (
     <figure id={id ?? `mes-evidence-${variant}`} className={`mes-evidence mes-evidence-${variant}${home ? " mes-home-screen" : ""}`}>
       {href ? <Link className="mes-evidence-frame" href={href} style={frameStyle} aria-label={`${alt} · 프로젝트 상세 보기`}>{image}</Link> : <div className="mes-evidence-frame" style={frameStyle}>{image}</div>}
-      <figcaption>{title && <strong>{title}</strong>}{caption}</figcaption>
+      <figcaption>
+        {title && <strong>{title}</strong>}{caption}
+        {!href && <a className="text-link mes-evidence-original" href={src} target="_blank" rel="noopener noreferrer" aria-label={`${title ?? alt} 원본 이미지 보기 (새 탭)`}>원본 이미지 보기</a>}
+      </figcaption>
     </figure>
   );
 }

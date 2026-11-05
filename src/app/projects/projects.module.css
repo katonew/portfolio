@@ -10,7 +10,7 @@
 
 .heading {
   max-width: 680px;
-  margin-bottom: 64px;
+  margin-bottom: var(--space-section-compact);
 }
 
 .heading h1 {
@@ -24,11 +24,11 @@
 }
 
 .section + .section {
-  margin-top: 72px;
+  margin-top: var(--space-section);
 }
 
 .section h2 {
-  font-size: 22px;
+  font-size: var(--text-section);
   margin-bottom: 24px;
 }
 
@@ -117,11 +117,12 @@
   display: inline-flex;
   align-items: center;
   min-height: 44px;
+  white-space: nowrap;
 }
 
 @media screen {
   .heading h1 {
-    font-size: clamp(28px, 3vw, 36px);
+    font-size: var(--text-page);
   }
 
   .project h3 {
@@ -129,7 +130,7 @@
   }
 
   .selectedList h3 {
-    font-size: 22px;
+    font-size: var(--text-item);
   }
 }
 

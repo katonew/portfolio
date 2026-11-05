@@ -36,7 +36,7 @@ export function PdsProjectDetail({ project }: { project: Project }) {
 
         <section className="cms-case" aria-labelledby="pds-maintenance">
           <h2 id="pds-maintenance">기술적 문제 해결과 추가 유지보수</h2>
-          {cases.map((item) => <div className="cms-case-implementation" id={item.slug} key={item.slug} style={{ scrollMarginTop: "calc(var(--header-height) + 24px)" }}>
+          {cases.map((item) => <div className="cms-case-implementation" id={item.slug} key={item.slug}>
             <h3>{item.title}</h3>
             <p>{item.problem}</p>
             <ul className="cms-technical-details">{item.implementation.map((step) => <li key={step}>{step}</li>)}</ul>

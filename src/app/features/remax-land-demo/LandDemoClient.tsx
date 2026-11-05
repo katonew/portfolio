@@ -404,6 +404,7 @@ export default function LandDemoClient({ embedded = false }: { embedded?: boolea
             <button
               type="button"
               className={mapViewType === "roadmap" ? styles.mapTypeActive : ""}
+              aria-pressed={mapViewType === "roadmap"}
               onClick={() => applyMapType("roadmap")}
             >
               지도
@@ -411,6 +412,7 @@ export default function LandDemoClient({ embedded = false }: { embedded?: boolea
             <button
               type="button"
               className={mapViewType === "skyview" ? styles.mapTypeActive : ""}
+              aria-pressed={mapViewType === "skyview"}
               onClick={() => applyMapType("skyview")}
             >
               스카이뷰
@@ -418,6 +420,7 @@ export default function LandDemoClient({ embedded = false }: { embedded?: boolea
             <button
               type="button"
               className={mapViewType === "use_district" ? styles.mapTypeActive : ""}
+              aria-pressed={mapViewType === "use_district"}
               onClick={() => applyMapType("use_district")}
             >
               지적편집도

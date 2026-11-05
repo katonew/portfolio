@@ -7,6 +7,13 @@
   --line: #d8e0ea;
   --primary: #183b67;
   --primary-soft: #edf3fa;
+  --control-border: #7b8b9d;
+  --text-page: clamp(28px, 3vw, 38px);
+  --text-section: clamp(24px, 2.2vw, 28px);
+  --text-item: clamp(20px, 1.8vw, 22px);
+  --space-section: 72px;
+  --space-section-compact: 48px;
+  --space-heading: 32px;
   --header-height: 68px;
 }
 
@@ -50,6 +57,15 @@
   margin-bottom: 4px;
   color: var(--text);
   font-size: 17px;
+}
+
+.mes-evidence-original {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-left: 12px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .mes-detail-page .mes-evidence {
@@ -152,10 +168,6 @@
   margin-bottom: 8px;
 }
 
-.mes-detail-page section[id] {
-  scroll-margin-top: calc(var(--header-height) + 24px);
-}
-
 @media (max-width: 860px) {
   .mes-detail-page .mes-evidence { width: 100%; }
   .mes-evidence-dashboard .mes-evidence-frame {
@@ -182,13 +194,16 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-offset, var(--header-height)) + 24px);
+  overflow-x: clip;
 }
 
 body {
   margin: 0;
+  overflow-x: clip;
   background: var(--bg);
   color: var(--text);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.65;
   text-rendering: optimizeLegibility;
 }
@@ -196,6 +211,19 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 h1,
@@ -242,6 +270,13 @@ p {
   font-size: 13px;
 }
 
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  white-space: nowrap;
+}
+
 .nav a:hover,
 .print-button:hover,
 .text-link:hover,
@@ -284,8 +319,9 @@ p {
   color: var(--primary);
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
+  overflow-wrap: anywhere;
 }
 
 h1 {
@@ -969,7 +1005,7 @@ h4 {
 
 .portfolio-home .hero-copy-block {
   word-break: keep-all;
-  overflow-wrap: normal;
+  overflow-wrap: break-word;
 }
 
 .portfolio-home .eyebrow {
@@ -1145,7 +1181,7 @@ h4 {
 }
 
 .portfolio-home .home-band {
-  padding: 88px 0;
+  padding: var(--space-section) 0;
 }
 
 .portfolio-home .projects-band {
@@ -1154,17 +1190,16 @@ h4 {
 
 .portfolio-home .projects-band .section-heading .eyebrow {
   margin-bottom: 12px;
-  font-size: 11px;
-  letter-spacing: 0.1em;
+  font-size: 13px;
+  letter-spacing: 0;
 }
 
 .portfolio-home .section {
   padding: 0;
-  scroll-margin-top: 100px;
 }
 
 .portfolio-home .section-heading {
-  margin-bottom: 44px;
+  margin-bottom: var(--space-heading);
 }
 
 .portfolio-home .section-heading h2 {
@@ -1212,7 +1247,8 @@ h4 {
   font-size: 12px;
   font-weight: 600;
   line-height: 1.6;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
 }
 
 .portfolio-home .featured-project h3 {
@@ -1285,6 +1321,7 @@ h4 {
 
 .primary-link .cta-label,
 .detail-link .cta-label {
+  white-space: nowrap;
   text-decoration-line: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 5px;
@@ -1401,7 +1438,7 @@ h4 {
   font-size: 22px;
   max-width: 18ch;
   word-break: keep-all;
-  overflow-wrap: normal;
+  overflow-wrap: break-word;
 }
 
 .portfolio-home .case-content {
@@ -1728,7 +1765,7 @@ h4 {
   }
 
   .portfolio-home .home-band {
-    padding: 64px 0;
+    padding: 56px 0;
   }
 
   .portfolio-home .experience-summary-grid,
@@ -1760,9 +1797,6 @@ h4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .portfolio-home .section {
-    scroll-margin-top: 140px;
-  }
 }
 
 @media (max-width: 520px) {
@@ -1826,6 +1860,10 @@ h4 {
 }
 
 @media (max-width: 860px) {
+  html:has(.portfolio-home) {
+    scroll-padding-top: 24px;
+  }
+
   .header-inner {
     align-items: flex-start;
     flex-direction: column;
@@ -1856,10 +1894,6 @@ h4 {
   .site-header:has(+ .portfolio-home) .print-button {
     padding: 8px 4px;
     border-left: 0;
-  }
-
-  .portfolio-home .section {
-    scroll-margin-top: 24px;
   }
 
   .site-header:has(+ .portfolio-home) .nav a {
@@ -2324,7 +2358,12 @@ h4 {
   font-size: 12px;
   font-weight: 600;
   line-height: 1.6;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
+}
+
+.cms-detail-page h2.case-study-label {
+  font-size: var(--text-section);
+  line-height: 1.3;
 }
 
 .cms-detail-page .case-disclosure {
@@ -2497,7 +2536,7 @@ h4 {
   padding: 64px 0;
   border-bottom: 1px solid var(--line);
   word-break: keep-all;
-  overflow-wrap: normal;
+  overflow-wrap: break-word;
 }
 
 .cms-detail-page .cms-project-summary + .cms-case {
@@ -2562,7 +2601,7 @@ h4 {
 .cms-detail-page .cms-flow li {
   min-width: 0;
   word-break: keep-all;
-  overflow-wrap: normal;
+  overflow-wrap: break-word;
 }
 
 .cms-detail-page .cms-flow li:not(:last-child)::after {
@@ -2987,7 +3026,6 @@ h4 {
 
 .mes-evidence figcaption { margin-top: 8px; line-height: 1.7; }
 .mes-evidence figcaption strong { margin-bottom: 3px; font-size: 18px; font-weight: 600; }
-.mes-evidence[id] { scroll-margin-top: calc(var(--header-height) + 24px); }
 
 .mes-detail-page .mes-evidence-group > h3 {
   margin: 32px 0 0;
@@ -3041,10 +3079,10 @@ h4 {
 .mes-problem-detail .cms-case > h2 {
   grid-column: 1;
   margin: 0;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.8;
   color: var(--primary);
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .mes-problem-detail .cms-case > :not(h2) { grid-column: 2; min-width: 0; margin-top: 0; }
@@ -3109,10 +3147,10 @@ h4 {
 
 .mes-detail-page .mes-feature-stories.mes-wide { padding-top: 32px; width: min(1560px, calc(100vw - 48px)); margin-inline: calc((100% - min(1560px, calc(100vw - 48px))) / 2); }
 .mes-detail-page .mes-feature-stories > .cms-case { padding: 24px 0 40px; }
-.mes-detail-page .mes-feature-story { padding: 48px 0 64px; }
+.mes-detail-page .mes-feature-story { padding: 40px 0 var(--space-section-compact); }
 .mes-detail-page .mes-feature-story > header { max-width: 1200px; margin: 0 auto 20px; }
 .mes-detail-page .mes-feature-story h2 { max-width: 36ch; margin-bottom: 16px; font-size: clamp(28px, 3.2vw, 42px); line-height: 1.4; letter-spacing: -0.025em; }
-.mes-detail-page .mes-feature-story + .mes-feature-story { margin-top: 44px; border-top: 1px solid var(--line); }
+.mes-detail-page .mes-feature-story + .mes-feature-story { border-top: 1px solid var(--line); }
 .mes-detail-page .mes-feature-story .mes-evidence { width: 100%; max-width: 1180px; margin: 20px auto 32px; }
 .mes-detail-page .mes-feature-story .mes-evidence-frame { max-height: 860px; }
 .mes-detail-page .mes-feature-story .mes-evidence-dashboard { max-width: 1360px; }
@@ -3138,7 +3176,6 @@ h4 {
 .mes-detail-page .mes-secondary-evidence { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 7fr); gap: 32px; align-items: start; max-width: 1100px; margin: 48px auto 0; }
 .mes-detail-page .mes-secondary-evidence > p { margin: 12px 0 0; }
 .mes-detail-page .mes-secondary-evidence .mes-evidence-quality { width: 100%; max-width: none; margin: 0; }
-.mes-detail-page .mes-feature-stories[id] { scroll-margin-top: calc(var(--header-height) + 24px); }
 
 .mes-detail-page .mes-design-origin { margin: 32px 0; }
 .mes-detail-page .mes-design-origin h3 { font-size: 20px; }
@@ -3191,8 +3228,8 @@ h4 {
 /* 제목·강조 크기를 화면 폭에 맞추고 인쇄 타이포그래피는 유지합니다. */
 @media screen {
   .portfolio-home {
-    --home-title-size: clamp(24px, 2.2vw, 28px);
-    --home-statement-size: clamp(20px, 1.8vw, 22px);
+    --home-title-size: var(--text-section);
+    --home-statement-size: var(--text-item);
   }
 
   .portfolio-home .hero-copy-block h1 {
@@ -3201,7 +3238,7 @@ h4 {
   }
 
   .portfolio-home .featured-project h3 {
-    font-size: clamp(20px, 1.8vw, 22px);
+    font-size: var(--text-item);
   }
 
   .portfolio-home .featured-project-primary h3 {
@@ -3209,8 +3246,9 @@ h4 {
   }
 
   .portfolio-home .project-statement {
-    font-size: clamp(20px, 1.8vw, 22px);
-    line-height: 1.5;
+    font-size: clamp(18px, 1.6vw, 20px);
+    font-weight: 500;
+    line-height: 1.6;
   }
 
   .portfolio-home .project-statement span {
@@ -3235,7 +3273,7 @@ h4 {
   }
 
   .cms-detail-page .cms-project-hero h1 {
-    font-size: clamp(28px, 3vw, 38px);
+    font-size: var(--text-page);
     line-height: 1.3;
   }
 

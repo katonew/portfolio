@@ -1,8 +1,6 @@
 .page {
-  min-height: calc(100vh - 68px);
-  background:
-    radial-gradient(circle at top left, rgba(24, 59, 103, 0.08), transparent 32%),
-    linear-gradient(180deg, #f7fafc 0%, #edf3fa 100%);
+  min-height: calc(100svh - var(--header-offset, var(--header-height)));
+  background: var(--bg);
 }
 
 .container {
@@ -19,17 +17,17 @@
 
 .eyebrow {
   margin: 0;
-  color: #183b67;
+  color: var(--primary);
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .hero h1 {
   margin: 0;
-  color: #172235;
-  font-size: clamp(30px, 5vw, 44px);
+  color: var(--text);
+  font-size: var(--text-page);
   line-height: 1.16;
   letter-spacing: -0.04em;
 }
@@ -37,7 +35,7 @@
 .lead {
   max-width: 880px;
   margin: 0;
-  color: #506070;
+  color: var(--muted);
   font-size: 16px;
 }
 
@@ -52,8 +50,8 @@
 .summaryPanel,
 .note,
 .payloadPanel {
-  border: 1px solid #d8e0ea;
-  background: #ffffff;
+  border: 1px solid var(--line);
+  background: var(--surface);
   box-shadow: 0 20px 40px rgba(23, 34, 53, 0.05);
 }
 
@@ -67,7 +65,7 @@
   gap: 16px;
   align-items: center;
   padding: 18px 20px;
-  border-bottom: 1px solid #d8e0ea;
+  border-bottom: 1px solid var(--line);
 }
 
 .mapHeader h2,
@@ -75,7 +73,7 @@
 .payloadPanel h2,
 .note h2 {
   margin: 0 0 6px;
-  color: #172235;
+  color: var(--text);
   font-size: 20px;
 }
 
@@ -84,15 +82,15 @@
 .payloadPanel p,
 .note p {
   margin: 0;
-  color: #506070;
+  color: var(--muted);
   font-size: 14px;
 }
 
 .mapHeader button,
 .payloadHeader button {
   border: 0;
-  background: #183b67;
-  color: #ffffff;
+  background: var(--primary);
+  color: var(--surface);
   border-radius: 999px;
   padding: 10px 16px;
   font-size: 13px;
@@ -128,25 +126,27 @@
 }
 
 .searchBox span {
-  color: #506070;
+  color: var(--muted);
   font-size: 12px;
   font-weight: 700;
 }
 
 .searchBox input {
   width: 100%;
-  border: 1px solid #c9d5e3;
-  background: #ffffff;
-  color: #172235;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid var(--control-border);
+  background: var(--surface);
+  color: var(--text);
   padding: 12px 14px;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .toolbar button,
 .mapTypeButtons button {
   border: 0;
-  background: #183b67;
-  color: #ffffff;
+  background: var(--primary);
+  color: var(--surface);
   padding: 0 16px;
   font-size: 13px;
   font-weight: 700;
@@ -155,20 +155,47 @@
 
 .mapTypeButtons {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   padding: 14px 20px 0;
 }
 
 .mapTypeButtons button {
-  min-height: 40px;
+  min-height: 44px;
   border-radius: 999px;
   background: #dfe8f2;
-  color: #183b67;
+  color: var(--primary);
 }
 
-.mapTypeActive {
-  background: #183b67 !important;
-  color: #ffffff !important;
+.mapTypeButtons .mapTypeActive {
+  background: var(--primary);
+  color: var(--surface);
+}
+
+.mapHeader button,
+.payloadHeader button,
+.toolbar button,
+.selectedItemHeader button {
+  min-height: 44px;
+}
+
+.layout button,
+.payloadPanel button {
+  white-space: nowrap;
+}
+
+.layout button:active:not(:disabled),
+.payloadPanel button:active:not(:disabled) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.layout button:disabled,
+.payloadPanel button:disabled {
+  background: var(--surface-muted);
+  color: var(--muted);
+  cursor: not-allowed;
+  box-shadow: inset 0 0 0 1px var(--control-border);
 }
 
 .mapCanvasWrap {
@@ -190,7 +217,7 @@
   display: grid;
   place-items: center;
   background: rgba(247, 250, 252, 0.88);
-  color: #183b67;
+  color: var(--primary);
   font-size: 14px;
   font-weight: 700;
   z-index: 2;
@@ -200,7 +227,7 @@
   display: grid;
   gap: 6px;
   margin-top: 12px;
-  color: #506070;
+  color: var(--muted);
   font-size: 13px;
 }
 
@@ -238,21 +265,22 @@
 }
 
 .metricCard {
-  border: 1px solid #d8e0ea;
-  background: #f5f8fc;
-  padding: 14px 16px;
+  min-width: 0;
+  border-bottom: 1px solid var(--line);
+  padding: 12px 0;
+  overflow-wrap: anywhere;
 }
 
 .metricCard span {
   display: block;
   margin-bottom: 6px;
-  color: #506070;
+  color: var(--muted);
   font-size: 12px;
   font-weight: 700;
 }
 
 .metricCard strong {
-  color: #172235;
+  color: var(--text);
   font-size: 20px;
 }
 
@@ -265,14 +293,15 @@
   border: 1px dashed #b7c7d9;
   background: #f7fafc;
   padding: 16px;
-  color: #506070;
+  color: var(--muted);
   font-size: 14px;
 }
 
 .selectedItem {
-  border: 1px solid #d8e0ea;
-  background: #ffffff;
-  padding: 14px 16px;
+  min-width: 0;
+  border-bottom: 1px solid var(--line);
+  padding: 12px 0;
+  overflow-wrap: anywhere;
 }
 
 .selectedItemHeader {
@@ -283,7 +312,7 @@
 }
 
 .selectedItemHeader strong {
-  color: #172235;
+  color: var(--text);
   font-size: 16px;
 }
 
@@ -298,7 +327,7 @@
 
 .selectedItem p {
   margin: 0 0 4px;
-  color: #506070;
+  color: var(--muted);
   font-size: 13px;
 }
 
@@ -309,7 +338,7 @@
 .note ul {
   margin: 12px 0 0;
   padding-left: 18px;
-  color: #506070;
+  color: var(--muted);
 }
 
 .payloadPanel {
@@ -326,8 +355,11 @@
 }
 
 .payloadPreview {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   overflow: auto;
-  border: 1px solid #d8e0ea;
+  border: 1px solid var(--line);
   background: #0f1720;
   color: #d6e2f0;
   padding: 18px;
@@ -343,7 +375,7 @@
   border: 1px solid rgba(17, 42, 74, 0.16);
   background: rgba(255, 255, 255, 0.96);
   padding: 6px 8px;
-  color: #183b67;
+  color: var(--primary);
   box-shadow: 0 10px 20px rgba(23, 34, 53, 0.14);
 }
 
@@ -354,8 +386,8 @@
   width: 22px;
   height: 22px;
   border-radius: 999px;
-  background: #183b67;
-  color: #ffffff;
+  background: var(--primary);
+  color: var(--surface);
   font-size: 12px;
   font-weight: 700;
 }
