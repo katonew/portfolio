@@ -289,17 +289,17 @@ export default function PortfolioPdfPage() {
                 { x: 341, width: 312, alt: "해당 작업지시에 적용한 BOM 버전과 Routing 개정값" }
               ]} />
               <EvidenceImage image={trace} alt="누적 생산수량과 양품·불량 수량"
-                crop={{ x: 24, y: 1276, width: 486, height: 106 }} />
+                crop={{ x: 24, y: 1276, width: 468, height: 106 }} />
             </div>
             <div className={styles.evidenceStack}>
               <p>LOT 검사 수량</p>
-              <EvidenceColumns image={inspection} y={178} height={72} columns={[
+              <EvidenceColumns image={inspection} y={181} height={67} columns={[
                 { x: 26, width: 185, alt: "확정 검사 대상과 누적 검사·합격·불합격 항목" },
                 { x: 442, width: 143, alt: "확정 검사 대상과 누적 검사·합격·불합격 수량" }
               ]} />
               <div className={styles.inspectionHistory}>
                 <p>회차별 검사 이력</p>
-                <EvidenceColumns image={inspection} y={542} height={172} columns={[
+                <EvidenceColumns image={inspection} y={544} height={166} columns={[
                   { x: 23, width: 136, alt: "검사 이력의 검사 회차 열" },
                   { x: 662, width: 185, alt: "같은 이력의 회차별 검사·합격·불합격 수량 열" }
                 ]} />
@@ -330,8 +330,14 @@ export default function PortfolioPdfPage() {
           <p className={styles.documentTrail}>
             <a href={`${sourceRoot}docs/mini_mes_prd.md`}>mini_mes_prd.md</a> → <a href={`${sourceRoot}docs/business-rules.md`}>business-rules.md</a> → <a href={`${sourceRoot}docs/erd-design.md`}>erd-design.md</a> → <a href={`${sourceRoot}docs/database-design.md`}>database-design.md</a> → <a href={`${sourceRoot}db/schema.sql`}>schema.sql</a> → Spring 구현 → <a href={`${sourceRoot}docs/material-return-verification.md`}>검증 기록</a>
           </p>
-          <p className={styles.caption}><strong>AI Workflow</strong> · ChatGPT 설계 검토 · Codex 문서·AGENTS.md 기준 구현 · Graphify 코드 관계 탐색 · Superpowers 반환 계획</p>
-          <p className={styles.caption}><strong>Portfolio Production</strong> · Figma MCP로 웹 초안과 PDF 화면 배치 검토.</p>
+          <h4 className={styles.aiWorkflowTitle}>AI-assisted Engineering</h4>
+          <dl className={styles.aiWorkflow}>
+            <div><dt>ChatGPT</dt><dd>업무 규칙·설계 검토</dd></div>
+            <div><dt>Codex</dt><dd>문서·AGENTS.md 기준 구현</dd></div>
+            <div><dt>Graphify</dt><dd>Controller → Service → Mapper 관계 탐색</dd></div>
+            <div><dt>Superpowers</dt><dd>반환 설계·계획과 검증 범위 정리</dd></div>
+          </dl>
+          <p className={styles.caption}><strong>Portfolio Production</strong> · Figma MCP로 웹 초안과 PDF 증거 화면 배치 검토.</p>
         </section>
       </Sheet>
 

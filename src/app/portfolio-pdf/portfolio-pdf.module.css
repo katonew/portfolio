@@ -336,7 +336,7 @@
 
 .evidencePair {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 47fr) minmax(0, 53fr);
   gap: 4mm;
 }
 
@@ -360,7 +360,7 @@
 }
 
 .inspectionHistory .evidenceColumns {
-  max-width: 73mm;
+  max-width: 78mm;
 }
 
 .decisions article,
@@ -418,6 +418,31 @@
 
 .engineeringContext .sectionTitle {
   font-size: 12pt;
+}
+
+.engineeringContext .aiWorkflowTitle {
+  margin: 2.4mm 0 1mm;
+  color: var(--pdf-muted);
+  font-size: 9pt;
+}
+
+.aiWorkflow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .6mm 5mm;
+  color: var(--pdf-muted);
+  font-size: 9pt;
+  line-height: 1.46;
+}
+
+.aiWorkflow > div {
+  display: grid;
+  grid-template-columns: 22mm minmax(0, 1fr);
+  gap: 2mm;
+}
+
+.aiWorkflow dt {
+  font-weight: 700;
 }
 
 .list {
