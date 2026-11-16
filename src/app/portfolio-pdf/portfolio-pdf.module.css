@@ -305,8 +305,8 @@
 }
 
 .productEvidence + .productEvidence {
-  margin-top: 3.4mm;
-  padding-top: 2.8mm;
+  margin-top: 2.8mm;
+  padding-top: 2.3mm;
   border-top: 1px solid var(--pdf-line);
 }
 
@@ -322,8 +322,16 @@
   font-variant-numeric: tabular-nums;
 }
 
-.productEvidence > figure + figure {
-  margin-top: 1.6mm;
+.materialComparison {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 4mm;
+  margin-top: 2mm;
+}
+
+.materialComparison .caption {
+  margin-top: 0;
 }
 
 .evidencePair {
@@ -332,19 +340,42 @@
   gap: 4mm;
 }
 
+.evidenceStack {
+  display: grid;
+  align-content: start;
+  gap: 1.5mm;
+}
+
+.evidenceStack > p,
+.inspectionHistory > p {
+  margin: 0 0 1.2mm;
+  color: var(--pdf-muted);
+  font-size: 8.5pt;
+  font-weight: 700;
+}
+
+.evidenceColumns {
+  display: grid;
+  gap: 1.5mm;
+}
+
+.inspectionHistory .evidenceColumns {
+  max-width: 73mm;
+}
+
 .decisions article,
 .highlights article {
   border-top: 1px solid var(--pdf-line);
 }
 
 .decisions article {
-  padding: 2.8mm 0 2mm;
+  padding: 6mm 0 7mm;
 }
 
 .decisions h3,
 .highlights h3 {
-  margin-bottom: 1.5mm;
-  font-size: 12pt;
+  margin-bottom: 2.5mm;
+  font-size: 14pt;
   line-height: 1.28;
 }
 
@@ -355,22 +386,38 @@
 
 .decisionList > div {
   display: grid;
-  grid-template-columns: 29mm minmax(0, 1fr);
+  grid-template-columns: 22mm minmax(0, 1fr);
   gap: 2mm;
-  margin-top: .9mm;
+  align-items: baseline;
+  padding: 1.1mm 2.5mm;
+}
+
+.decisionList .keyDecision {
+  background: var(--pdf-tint);
+  font-size: 11pt;
+  font-weight: 700;
 }
 
 .decisionList dt,
-.explainedRows dt,
+.dataDetails dt,
 .workflow dt {
   color: var(--pdf-accent);
   font-weight: 700;
 }
 
 .sheet .documentTrail {
-  padding: 2.5mm 3mm;
-  background: var(--pdf-tint);
+  color: var(--pdf-muted);
   font-size: 9pt;
+}
+
+.engineeringContext {
+  margin-top: 7mm;
+  padding-top: 4mm;
+  border-top: 1px solid var(--pdf-line);
+}
+
+.engineeringContext .sectionTitle {
+  font-size: 12pt;
 }
 
 .list {
@@ -382,21 +429,198 @@
   margin-top: 1mm;
 }
 
-.explainedRows > div {
+.pipeline {
+  --pipeline-column-gap: 6mm;
+  --pipeline-row-gap: 12mm;
   display: grid;
-  grid-template-columns: 38mm minmax(0, 1fr);
-  gap: 4mm;
-  padding: 4mm 0;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--pipeline-row-gap) var(--pipeline-column-gap);
+  margin: 3mm 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pipeline li {
+  position: relative;
+  display: grid;
+  place-content: center;
+  gap: 2mm;
+  min-height: 32mm;
+  padding: 3mm 2mm;
+  border: 1px solid var(--pdf-line);
+  text-align: center;
+  line-height: 1.28;
+}
+
+.pipeline li strong {
+  font-size: 11pt;
+}
+
+.pipeline li span {
+  color: var(--pdf-muted);
+  font-size: 8.5pt;
+}
+
+.pipeline li[data-step-kind="decision"] {
+  border-color: var(--pdf-accent);
+  background: var(--pdf-tint);
+  color: var(--pdf-accent);
+}
+
+.pipelineLegend + .pipeline li:not([data-step-kind="external"]) {
+  background: var(--pdf-tint);
+}
+
+.pipelineLegend + .pipeline li strong {
+  font-size: 10pt;
+}
+
+.pipeline li[data-step-kind="external"] {
+  border: 1px dashed var(--pdf-muted);
+}
+
+/* The second row returns right to left, so the vertical connector is continuous. */
+.pipeline li:nth-child(n+5) {
+  grid-row: 2;
+}
+
+.pipeline li:nth-child(5) { grid-column: 4; }
+.pipeline li:nth-child(6) { grid-column: 3; }
+.pipeline li:nth-child(7) { grid-column: 2; }
+.pipeline li:nth-child(8) { grid-column: 1; }
+
+.pipeline li:not(:last-child)::before,
+.pipeline li:not(:last-child)::after {
+  position: absolute;
+  content: "";
+}
+
+.pipeline li:not(:last-child)::before {
+  top: 50%;
+  width: var(--pipeline-column-gap);
+  border-top: 1px solid var(--pdf-accent);
+}
+
+.pipeline li:not(:last-child)::after {
+  top: calc(50% - .9mm);
+  width: 1.8mm;
+  height: 1.8mm;
+  border-top: 1px solid var(--pdf-accent);
+  border-right: 1px solid var(--pdf-accent);
+}
+
+.pipeline li:nth-child(-n+3)::before { left: 100%; }
+
+.pipeline li:nth-child(-n+3)::after {
+  left: calc(100% + var(--pipeline-column-gap) - 2.8mm);
+  transform: rotate(45deg);
+}
+
+.pipeline li:nth-child(4)::before {
+  left: 50%;
+  top: 100%;
+  width: 0;
+  height: var(--pipeline-row-gap);
+  border-top: 0;
+  border-left: 1px solid var(--pdf-accent);
+}
+
+.pipeline li:nth-child(4)::after {
+  left: calc(50% - .9mm);
+  top: calc(100% + var(--pipeline-row-gap) - 2.8mm);
+  transform: rotate(135deg);
+}
+
+.pipeline li:nth-child(n+5)::before { right: 100%; }
+
+.pipeline li:nth-child(n+5)::after {
+  right: calc(100% + var(--pipeline-column-gap) - 2.8mm);
+  transform: rotate(225deg);
+}
+
+.pipelineLegend {
+  display: flex;
+  gap: 5mm;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--pdf-muted);
+  font-size: 9pt;
+}
+
+.pipelineLegend li::before {
+  display: inline-block;
+  width: 3mm;
+  height: 3mm;
+  margin-right: 1mm;
+  border: 1px solid var(--pdf-line);
+  background: var(--pdf-tint);
+  content: "";
+  vertical-align: -.4mm;
+}
+
+.pipelineLegend [data-step-kind="external"]::before {
+  border: 1px dashed var(--pdf-muted);
+  background: var(--pdf-paper);
+}
+
+.projectDetails {
+  margin-top: 11mm;
+}
+
+.dataDetails {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4mm 6mm;
+}
+
+.dataDetails > div {
+  padding-top: 2.5mm;
   border-top: 1px solid var(--pdf-line);
 }
 
+.highlights {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8mm 6mm;
+  margin-top: 8mm;
+}
+
 .highlights article {
-  padding: 3.5mm 0 4mm;
+  display: flex;
+  flex-direction: column;
+  min-height: 80mm;
+  padding: 4.5mm 3.5mm 4mm;
+  border: 1px solid var(--pdf-line);
+  border-top: 2px solid var(--pdf-accent);
+}
+
+.highlights h3 {
+  min-height: 12mm;
+}
+
+.highlights .decisionList {
+  color: var(--pdf-muted);
+  font-size: 9.25pt;
+}
+
+.highlights .decisionList > div {
+  display: block;
+  padding: 2mm 2.5mm;
+}
+
+.highlights .decisionList dt {
+  font-size: 8.5pt;
+}
+
+.highlights .decisionList .keyDecision {
+  color: var(--pdf-ink);
 }
 
 .highlights article > a {
-  display: inline-block;
-  margin-top: 1.7mm;
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 1.7mm 2.5mm 0;
   font-size: 9pt;
 }
 

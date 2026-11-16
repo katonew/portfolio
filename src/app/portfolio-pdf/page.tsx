@@ -37,57 +37,58 @@ const engineering = [
   {
     slug: "mes-material-idempotency",
     title: "소비·반환 멱등성과 재고 원자성",
-    problem: "응답 유실 후 재전송과 같은 LOT에 대한 동시 변경으로 재고가 중복 반영될 수 있었습니다.",
-    decision: "요청 키와 입력 fingerprint로 재전송을 식별하고, 새 요청은 잠금 안에서 최신 잔량을 검증했습니다.",
-    implementation: "Receipt 선점 → WorkOrder·원소비(반환 시)·RawLot 잠금 → 조건부 재고 변경 → 원장·Receipt 동시 커밋.",
-    verification: "Service·Mapper 정적 대조. 반환 검증 기록에서 DB 미접속 14개 클래스 83건 통과. MySQL 경합·롤백 시나리오는 작성됐으며 실행 성공 근거 미확인."
+    problem: "요청 재전송과 같은 LOT의 동시 변경은 재고에 중복 반영될 수 있습니다.",
+    decision: "요청 ID·Receipt로 재전송을 구분하고, RawLot 잠금과 조건부 UPDATE로 재고를 변경했습니다.",
+    evidence: "원장·재고·Receipt의 단일 트랜잭션 경로와 테스트 시나리오를 확인했습니다."
   },
   {
     slug: "mes-work-order-lock",
     title: "WorkOrder 부모 잠금으로 실적·완료 직렬화",
-    problem: "실적 등록과 완료가 같은 이전 합계를 읽으면 생산 상한·완료 판단과 최초 LOT 생성이 경합합니다.",
-    decision: "두 요청이 공유하는 WorkOrder 행을 먼저 잠그고 잠금 이후의 상태와 생산합을 사용했습니다.",
-    implementation: "FOR UPDATE 이후 등록 상한·완료 조건 확인. 첫 실적에 LOT 생성, 완료 시 양품 수량을 검사 대상으로 확정.",
-    verification: "실적 등록과 완료의 잠금·집계 경로를 정적으로 대조. 최초 LOT 생성·완료 경합 테스트 시나리오 확인."
+    problem: "실적 등록과 완료 요청이 같은 이전 생산합을 읽을 수 있습니다.",
+    decision: "공유 부모인 WorkOrder를 먼저 잠그고 잠금 이후의 상태·누적 생산량으로 판단했습니다.",
+    evidence: "생산 상한·첫 LOT 생성·완료 판단이 같은 잠금 경계를 사용하는 코드 경로를 확인했습니다."
   },
   {
     slug: "mes-lot-traceability",
     title: "완제품 LOT에서 제조 이력 역추적",
-    problem: "현재 BOM으로 과거 생산을 설명하면 기준이 달라지고, 여러 원장을 단순 JOIN하면 수량이 중복 집계될 수 있습니다.",
-    decision: "WorkOrder에 보존한 BOM·Routing 버전을 조회하고 실제 원장을 따로 읽어 한 조회로 연결했습니다.",
-    implementation: "readOnly / REPEATABLE_READ 범위에서 생산실적·검사와 소비·반환을 조회해 예상량과 순소비를 비교.",
-    verification: "LotTraceService·Mapper·템플릿 정적 대조 및 실제 역추적 화면 확인."
+    problem: "현재 BOM으로 과거 생산을 설명하면 기준이 달라질 수 있습니다.",
+    decision: "WorkOrder에 보존한 확정 BOM·Routing과 실제 원장을 연결했습니다.",
+    evidence: "완제품 LOT에서 생산·자재·검사 이력을 함께 조회하는 소스와 화면을 확인했습니다."
   }
 ];
 
 const highlights = [
   {
     slug: "mes-material-idempotency",
+    category: "MES / INVENTORY",
     title: "재전송과 재고 경쟁을 구분",
-    problem: "요청이 다시 들어오거나 다른 요청이 같은 원자재 LOT을 변경할 수 있었습니다.",
-    decision: "요청 식별은 Receipt·fingerprint에 맡기고, 재고 변경은 LOT 잠금과 조건부 UPDATE 안에서 처리했습니다.",
-    evidence: "Service와 Mapper에서 동일 요청 결과 재사용, 원장과 재고의 동시 커밋·롤백 경로를 확인했습니다."
+    problem: "재전송·동시 요청으로 재고 중복 반영 가능.",
+    decision: "Receipt로 요청을 식별하고 LOT 잠금·조건부 UPDATE로 재고를 변경했습니다.",
+    evidence: "Service·Mapper의 원장·재고 동시 커밋 확인."
   },
   {
     slug: "cms-change-save",
+    category: "CMS / SAVE",
     title: "변경 행과 마스킹 상태를 따로 판단",
-    problem: "대량 편집에서 미변경 행과 마스킹된 표시값을 저장 대상으로 포함할 수 있었습니다.",
-    decision: "공통 Grid의 변경 목록과 화면의 마스킹 해제 여부를 각각 확인해 저장 요청을 구성했습니다.",
-    evidence: "화면 JS에서 저장 차단 분기와 저장 후 재조회 호출을 정적으로 확인했습니다."
+    problem: "미변경 행과 마스킹된 값이 저장될 위험.",
+    decision: "Grid의 변경 목록과 마스킹 해제 여부를 각각 검사해 저장 요청을 구성했습니다.",
+    evidence: "화면 JS의 저장 차단·재조회 경로 확인."
   },
   {
     slug: "cart-purchase-options",
+    category: "DATA / CART",
     title: "구매 조건 조합으로 장바구니 중복 판별",
-    problem: "같은 상품이라도 데이터 유형과 행·열·값 옵션에 따라 다른 구매 항목이 됩니다.",
-    decision: "구매자 유형·사용자·데이터·옵션 조합을 서버 중복 기준으로 사용했습니다.",
-    evidence: "중복 요청은 HTTP 409를 반환하고, 신규 등록 성공 시 Vue가 서버의 장바구니 상태를 다시 조회합니다."
+    problem: "같은 상품도 선택 옵션에 따라 다른 구매 항목.",
+    decision: "구매자 유형·사용자·데이터·옵션 조합으로 서버에서 중복을 판별했습니다.",
+    evidence: "중복은 HTTP 409, 성공 후 Vue 상태 재조회."
   },
   {
     slug: "parcel-selection-state",
-    title: "지도 표시와 매물 저장 데이터의 기준 분리",
-    problem: "지도 경계를 그리는 객체와 매물 등록용 필지 목록의 역할과 형태가 달랐습니다.",
-    decision: "Polygon은 지도 표시에 사용하고, PNU로 관리하는 선택 목록을 합계와 저장 데이터의 기준으로 삼았습니다.",
-    evidence: "재구성 Demo에서 선택 필지의 경계와 면적·공시지가·저장 데이터 행 수가 함께 갱신됩니다."
+    category: "MAP / PROPERTY",
+    title: "PNU로 지도 표시와 저장 기준 분리",
+    problem: "지도 경계와 매물 저장용 목록의 역할이 다름.",
+    decision: "Polygon은 화면 표시에, PNU 선택 목록은 면적·공시지가 합계와 저장에 사용했습니다.",
+    evidence: "Demo에서 필지 선택 시 합계·저장 행 수 갱신."
   }
 ];
 
@@ -127,6 +128,22 @@ function Flow({ steps, columns }: { steps: string[]; columns?: number }) {
   </ol>;
 }
 
+function ProjectPipeline({ steps, label }: {
+  steps: { title: string; detail?: string; kind?: "decision" | "external" }[];
+  label: string;
+}) {
+  return (
+    <ol className={styles.pipeline} aria-label={label}>
+      {steps.map(({ title, detail, kind }) => (
+        <li key={title} data-step-kind={kind}>
+          <strong>{title}</strong>
+          {detail && <span>{detail}</span>}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 function EvidenceImage({ image, alt, caption, crop }: {
   image: StaticImageData;
   alt: string;
@@ -153,6 +170,20 @@ function EvidenceImage({ image, alt, caption, crop }: {
       </div>
       {caption && <figcaption>{caption}</figcaption>}
     </figure>
+  );
+}
+
+function EvidenceColumns({ image, y, height, columns }: {
+  image: StaticImageData;
+  y: number;
+  height: number;
+  columns: { x: number; width: number; alt: string }[];
+}) {
+  return (
+    <div className={styles.evidenceColumns}
+      style={{ gridTemplateColumns: columns.map(({ width }) => `minmax(0, ${width}fr)`).join(" ") }}>
+      {columns.map(({ x, width, alt }) => <EvidenceImage key={x} image={image} alt={alt} crop={{ x, y, width, height }} />)}
+    </div>
   );
 }
 
@@ -236,21 +267,46 @@ export default function PortfolioPdfPage() {
         </section>
         <section className={styles.productEvidence}>
           <h3><span>02</span> Material Traceability</h3>
-          <EvidenceImage image={materials} alt="원자재 LOT별 소비·반환·순소비 합계"
-            crop={{ x: 24, y: 531, width: 1245, height: 194 }} />
-          <EvidenceImage image={materials} alt="확정 BOM의 예상 소요량과 실제 순소비 비교"
-            crop={{ x: 24, y: 1407, width: 1245, height: 252 }}
-            caption="원소비에 반환을 연결하고 LOT별 순소비를 집계합니다. 생산 당시 확정한 BOM 기준의 예상량을 실제 순소비와 비교합니다." />
+          <EvidenceImage image={materials} alt="원자재 LOT과 소비·반환·순소비 수량, 같은 소비 행에 연결된 반환 이력"
+            crop={{ x: 350, y: 80, width: 915, height: 122 }} />
+          <div className={styles.materialComparison}>
+            <EvidenceImage image={materials} alt="확정 BOM의 기준 소요량·예상 소요량·실제 순소비·예상 대비 차이"
+              crop={{ x: 581, y: 1530, width: 695, height: 116 }} />
+            <p className={styles.caption}>소비 행에서 반환 이력을 확인하고, 확정 BOM의 예상량을 실제 순소비와 비교합니다.</p>
+          </div>
         </section>
         <section className={styles.productEvidence}>
           <h3><span>03</span> Finished Goods LOT Traceability</h3>
           <div className={styles.evidencePair}>
-            <EvidenceImage image={trace} alt="완제품 LOT, 작업지시, 적용 BOM과 Routing 정보"
-              crop={{ x: 22, y: 464, width: 686, height: 343 }} />
-            <EvidenceImage image={inspection} alt="완제품 LOT의 확정 검사 대상 수량과 합격·불합격 수량"
-              crop={{ x: 22, y: 24, width: 765, height: 250 }} />
+            <div className={styles.evidenceStack}>
+              <p>완제품 LOT · 생산 근거</p>
+              <EvidenceColumns image={trace} y={513} height={111} columns={[
+                { x: 24, width: 164, alt: "완제품 LOT·제품·작업지시 항목" },
+                { x: 341, width: 312, alt: "완제품 LOT 번호와 제품명, 완료 작업지시" }
+              ]} />
+              <EvidenceColumns image={trace} y={731} height={72} columns={[
+                { x: 24, width: 164, alt: "확정 BOM 버전과 Routing 개정 항목" },
+                { x: 341, width: 312, alt: "해당 작업지시에 적용한 BOM 버전과 Routing 개정값" }
+              ]} />
+              <EvidenceImage image={trace} alt="누적 생산수량과 양품·불량 수량"
+                crop={{ x: 24, y: 1276, width: 486, height: 106 }} />
+            </div>
+            <div className={styles.evidenceStack}>
+              <p>LOT 검사 수량</p>
+              <EvidenceColumns image={inspection} y={178} height={72} columns={[
+                { x: 26, width: 185, alt: "확정 검사 대상과 누적 검사·합격·불합격 항목" },
+                { x: 442, width: 143, alt: "확정 검사 대상과 누적 검사·합격·불합격 수량" }
+              ]} />
+              <div className={styles.inspectionHistory}>
+                <p>회차별 검사 이력</p>
+                <EvidenceColumns image={inspection} y={542} height={172} columns={[
+                  { x: 23, width: 136, alt: "검사 이력의 검사 회차 열" },
+                  { x: 662, width: 185, alt: "같은 이력의 회차별 검사·합격·불합격 수량 열" }
+                ]} />
+              </div>
+            </div>
           </div>
-          <p className={styles.caption}>완제품 LOT → 작업지시 → 확정 Routing → 생산실적 → 품질검사. 완료 시 확정한 대상과 누적 합격·불합격 수량을 조회합니다.</p>
+          <p className={styles.caption}>Finished Goods LOT → WorkOrder → Routing → Production Result → Inspection</p>
         </section>
       </Sheet>
 
@@ -263,46 +319,44 @@ export default function PortfolioPdfPage() {
               <h3><span>{String(index + 1).padStart(2, "0")}</span> {entry.title}</h3>
               <dl className={styles.decisionList}>
                 <div><dt>Problem</dt><dd>{entry.problem}</dd></div>
-                <div><dt>My Decision</dt><dd>{entry.decision}</dd></div>
-                <div><dt>Implementation</dt><dd>{entry.implementation}</dd></div>
-                <div><dt>Verification</dt><dd>{entry.verification} <a href={source.href}>소스</a></dd></div>
+                <div className={styles.keyDecision}><dt>Decision</dt><dd>{entry.decision}</dd></div>
+                <div><dt>Evidence</dt><dd>{entry.evidence} <a href={source.href}>소스</a></dd></div>
               </dl>
             </article>;
           })}
         </div>
-        <section className={styles.section}>
+        <section className={styles.engineeringContext}>
           <h3 className={styles.sectionTitle}>PRD에서 구현·검증까지</h3>
           <p className={styles.documentTrail}>
             <a href={`${sourceRoot}docs/mini_mes_prd.md`}>mini_mes_prd.md</a> → <a href={`${sourceRoot}docs/business-rules.md`}>business-rules.md</a> → <a href={`${sourceRoot}docs/erd-design.md`}>erd-design.md</a> → <a href={`${sourceRoot}docs/database-design.md`}>database-design.md</a> → <a href={`${sourceRoot}db/schema.sql`}>schema.sql</a> → Spring 구현 → <a href={`${sourceRoot}docs/material-return-verification.md`}>검증 기록</a>
           </p>
-          <p className={styles.caption}>ChatGPT로 업무 규칙·설계를 검토하고, Codex 구현은 문서와 AGENTS.md를 기준으로 검토했습니다. Graphify로 Controller → Service → Mapper 관계를 탐색했고, Superpowers는 반환 설계 문서·구현 계획·검증 범위 정리에 사용했습니다.</p>
-          <p className={styles.caption}><strong>Portfolio Production</strong> · Figma MCP는 웹 초안과 PDF의 실제 화면 배치에 활용했습니다.</p>
+          <p className={styles.caption}><strong>AI Workflow</strong> · ChatGPT 설계 검토 · Codex 문서·AGENTS.md 기준 구현 · Graphify 코드 관계 탐색 · Superpowers 반환 계획</p>
+          <p className={styles.caption}><strong>Portfolio Production</strong> · Figma MCP로 웹 초안과 PDF 화면 배치 검토.</p>
         </section>
       </Sheet>
 
       <Sheet number={6} label="COMPANY PROJECT / CMS · ERP" title="CMS / ERP"
         summary={cms.oneLine}>
         <p className={styles.stack}>{cms.period} · {cms.stack.join(" · ")}</p>
-        <section className={styles.section}>
-          <h3 className={styles.sectionTitle}>담당 범위</h3>
-          <p>{cms.summary}</p>
-          <ul className={styles.list}>{cms.role.map((role) => <li key={role}>{role}</li>)}</ul>
-        </section>
+        <p>정산 조회·편집 화면을 개발하고, 공통 AUIGrid와 기존 저장 API를 연결했습니다.</p>
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>비용 정산 상세 편집</h3>
-          <Flow steps={["정산 조회", "그리드 편집", "변경 행 선별", "마스킹 검사", "저장 판단", "재조회"]} />
-          <dl className={styles.explainedRows}>
-            <div><dt>변경 행 선별</dt><dd>공통 AUIGrid의 추가·수정·삭제 목록을 읽어 Header 아래 변경된 상세만 요청에 포함했습니다.</dd></div>
-            <div><dt>마스킹 검사</dt><dd>그리드의 변경 상태와 별개로 마스킹 해제 여부를 확인하고, 해제되지 않았으면 요청 전 저장을 중단했습니다.</dd></div>
-            <div><dt>저장 판단과 재조회</dt><dd>화면의 검사 이후 기존 Controller·Service의 정산 저장 경로에 연결했습니다. 성공 콜백에서 재조회하고 편집했던 행 위치를 복원했습니다.</dd></div>
-          </dl>
+          <ProjectPipeline label="비용 정산 조회부터 저장 후 재조회까지" steps={[
+            { title: "정산 조회", detail: "Header · 상세 비용" },
+            { title: "AUIGrid 편집", detail: "추가 · 수정 · 삭제" },
+            { title: "변경 행 선별", detail: "변경 상세만 추출", kind: "decision" },
+            { title: "마스킹 상태 검사", detail: "미해제 시 요청 중단", kind: "decision" },
+            { title: "저장 판단·요청", detail: "검사 통과 시 전송", kind: "decision" },
+            { title: "Controller / Service", detail: "기존 정산 저장 경로" },
+            { title: "DB 저장", detail: "Oracle" },
+            { title: "재조회", detail: "편집 행 위치 복원" }
+          ]} />
         </section>
-        <section className={styles.section}>
-          <h3 className={styles.sectionTitle}>운영자가 사용한 기능</h3>
+        <section className={styles.projectDetails} aria-label="정산 편집에서 담당한 처리">
           <div className={styles.columns}>
-            <div><h4>검색·조회</h4><p>공통 코드 기반 검색조건을 구성하고 조회 API와 연결했습니다.</p></div>
-            <div><h4>다건 편집</h4><p>AUIGrid에서 비용 행의 추가·복사·삭제를 처리했습니다.</p></div>
-            <div><h4>후속 작업</h4><p>선택 행 메일 전송과 Excel 다운로드 기능을 연결했습니다.</p></div>
+            <div><h4>01 변경 행 선별</h4><p>공통 AUIGrid의 추가·수정·삭제 목록에서 변경된 상세만 요청에 포함했습니다.</p></div>
+            <div><h4>02 마스킹 검사</h4><p>변경 목록과 별개로 마스킹 해제 여부를 검사했습니다. 미해제 상태에선 요청을 보내기 전에 중단했습니다.</p></div>
+            <div><h4>03 저장 후 재조회</h4><p>기존 Controller·Service 저장 경로를 사용하고, 성공하면 재조회 후 편집 행 위치를 복원했습니다.</p></div>
           </div>
         </section>
         <aside className={styles.note}>
@@ -317,17 +371,28 @@ export default function PortfolioPdfPage() {
         <p className={styles.stack}>Java · Spring Boot · Spring Data JPA · MySQL</p>
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>외부 주문 수집과 분류 API 연동</h3>
-          <Flow columns={4} steps={["Partner Sender", "POST /api/order", "Site Key + IP", "주문값 표준화", "/predict", "분류 결과", "OrderEntity", "MySQL"]} />
-          <dl className={styles.explainedRows}>
-            <div><dt>수집·인증</dt><dd>Spring에서 주문 요청을 수신합니다. 요청의 사이트 키와 발신 IP 조합으로 등록된 제휴사를 확인합니다.</dd></div>
-            <div><dt>주문값 표준화</dt><dd>배송 지역, 결제수단, 연령대, 성별 입력을 표준 값으로 변환해 후속 처리에 사용합니다.</dd></div>
-            <div><dt>분류 API 연동</dt><dd>상품명을 분류 API에 전달하고, 응답의 분류 코드와 대·중·소·세분류 값을 주문 모델에 매핑합니다.</dd></div>
-            <div><dt>저장·조회</dt><dd>제휴사·주문 정보와 분류 결과를 OrderEntity로 구성해 MySQL에 저장합니다. 조회 코드에서는 제휴 사이트와 사이트 식별자로 주문을 찾습니다.</dd></div>
-          </dl>
+          <ul className={styles.pipelineLegend}>
+            <li>Spring 주문 처리·저장</li>
+            <li data-step-kind="external">외부 시스템</li>
+          </ul>
+          <ProjectPipeline label="제휴사 주문 수신부터 분류 결과 저장까지" steps={[
+            { title: "Partner Sender", detail: "제휴 주문 전송", kind: "external" },
+            { title: "POST /api/order", detail: "Spring 주문 수신" },
+            { title: "Partner Auth", detail: "Site Key + IP" },
+            { title: "Normalize Order Data", detail: "주문 속성 표준화" },
+            { title: "Classification API", detail: "/predict · 상품명 전달", kind: "external" },
+            { title: "Classification Result", detail: "분류 코드·분류 단계" },
+            { title: "OrderEntity", detail: "주문에 분류값 매핑" },
+            { title: "MySQL", detail: "주문·분류 결과 저장" }
+          ]} />
         </section>
-        <section className={styles.section}>
-          <h3 className={styles.sectionTitle}>분류 응답과 주문 저장</h3>
-          <p>분류 응답을 받으면 주문과 함께 보존하고, 호출이나 파싱 실패 시 기존 수집 로직은 분류 결과 없이 주문 저장을 시도합니다. 배송 지역·결제수단 등 표준화된 주문 속성과 분류 결과는 이후 조회·분석에 사용할 수 있습니다.</p>
+        <section className={styles.projectDetails} aria-label="주문 처리 단계별 설명">
+          <dl className={styles.dataDetails}>
+            <div><dt>수집</dt><dd>제휴 사이트가 보낸 주문을 Spring Controller에서 수신합니다.</dd></div>
+            <div><dt>인증</dt><dd>사이트 키와 발신 IP 조합으로 등록된 제휴사를 확인합니다.</dd></div>
+            <div><dt>표준화·분류</dt><dd>지역·결제수단 등을 표준화하고, 상품명으로 분류 API를 호출합니다.</dd></div>
+            <div><dt>저장·조회</dt><dd>주문과 분류값을 저장하고, 제휴 사이트와 사이트 식별자로 조회합니다.</dd></div>
+          </dl>
         </section>
         <aside className={styles.note}>
           <h3>확인 근거</h3>
@@ -351,19 +416,18 @@ export default function PortfolioPdfPage() {
       <Sheet number={9} label="PROBLEM SOLVING" title="문제 해결 사례"
         summary="업무 규칙을 적용할 기준을 정하고, 저장과 화면에서 그 기준이 이어지는 경로를 확인했습니다.">
         <div className={styles.highlights}>
-          {highlights.map((entry) => {
-            const item = getProblemSolving(entry.slug)!;
-            return <article key={entry.slug}>
-              <p className={styles.eyebrow}>{item.keyword}</p>
+          {highlights.map((entry) => (
+            <article key={entry.slug}>
+              <p className={styles.eyebrow}>{entry.category}</p>
               <h3>{entry.title}</h3>
               <dl className={styles.decisionList}>
                 <div><dt>Problem</dt><dd>{entry.problem}</dd></div>
-                <div><dt>Decision</dt><dd>{entry.decision}</dd></div>
+                <div className={styles.keyDecision}><dt>Decision</dt><dd>{entry.decision}</dd></div>
                 <div><dt>Evidence</dt><dd>{entry.evidence}</dd></div>
               </dl>
               <a href={`${portfolioUrl}/problem-solving/${entry.slug}/`}>상세 사례</a>
-            </article>;
-          })}
+            </article>
+          ))}
         </div>
       </Sheet>
 
