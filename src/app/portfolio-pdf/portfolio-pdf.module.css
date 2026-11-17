@@ -150,6 +150,19 @@
   object-position: center 30%;
 }
 
+.sheet .coverContact {
+  display: grid;
+  justify-items: start;
+  gap: 1mm;
+  margin-top: 3mm;
+  font-size: 9pt;
+  line-height: 1.4;
+}
+
+.coverContact a {
+  color: #d9f2ed;
+}
+
 .coverLabel {
   color: #b7ded6;
 }

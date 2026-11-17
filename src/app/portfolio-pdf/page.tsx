@@ -199,7 +199,13 @@ export default function PortfolioPdfPage() {
             <p className={styles.coverLead}>제조 IT · MES · 기업 업무 시스템</p>
             <p className={styles.coverDescription}>작업지시부터 생산·품질·LOT 이력을 잇는 개인 Mini MES와 기업 업무 시스템 개발 경험을 담았습니다.</p>
           </div>
-          <Image className={styles.coverPortrait} src={profilePhoto} alt={`${profile.name} 프로필 사진`} loading="eager" />
+          <div>
+            <Image className={styles.coverPortrait} src={profilePhoto} alt={`${profile.name} 프로필 사진`} loading="eager" />
+            <p className={styles.coverContact}>
+              <a href={portfolioUrl}>katonew.kro.kr</a>
+              <a href={`mailto:${profile.email}`}>{profile.email}</a>
+            </p>
+          </div>
         </div>
         <h2 className={styles.sectionTitle}>목차</h2>
         <dl className={styles.contents}>
