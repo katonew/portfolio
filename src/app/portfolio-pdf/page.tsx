@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Image, { type StaticImageData } from "next/image";
 import type { ReactNode } from "react";
-import dashboard from "../../../public/mini-mes/01-dashboard.png";
 import inspection from "../../../public/mini-mes/10-quality-inspection-core.png";
 import trace from "../../../public/mini-mes/11-traceability-summary.png";
 import materials from "../../../public/mini-mes/12-traceability-materials.png";
+import dashboard from "../../../public/portfolio-pdf/mini-mes-dashboard.png";
 import parcelMap from "../../../public/portfolio-pdf/property-parcel-demo.png";
+import profilePhoto from "../../../public/profile-photo.png";
 import { careerTimeline, profile, realEstateFeature } from "@/data/profile";
 import { getProblemSolving } from "@/lib/problem-solving";
 import { getProject } from "@/lib/projects";
@@ -192,10 +193,13 @@ export default function PortfolioPdfPage() {
     <main className={styles.document} data-portfolio-pdf>
       <Sheet number={1} label="채용 제출용">
         <div className={styles.cover}>
-          <p className={styles.coverLabel}>JAVA / SPRING · WEB DEVELOPMENT</p>
-          <h1 id="pdf-title-1">{profile.name}<br /><span>웹개발자 포트폴리오</span></h1>
-          <p className={styles.coverLead}>제조 IT · MES · 기업 업무 시스템</p>
-          <p className={styles.coverDescription}>작업지시부터 생산·품질·LOT 이력을 잇는 개인 Mini MES와 기업 업무 시스템 개발 경험을 담았습니다.</p>
+          <div>
+            <p className={styles.coverLabel}>JAVA / SPRING · WEB DEVELOPMENT</p>
+            <h1 id="pdf-title-1">{profile.name}<br /><span>웹개발자 포트폴리오</span></h1>
+            <p className={styles.coverLead}>제조 IT · MES · 기업 업무 시스템</p>
+            <p className={styles.coverDescription}>작업지시부터 생산·품질·LOT 이력을 잇는 개인 Mini MES와 기업 업무 시스템 개발 경험을 담았습니다.</p>
+          </div>
+          <Image className={styles.coverPortrait} src={profilePhoto} alt={`${profile.name} 프로필 사진`} loading="eager" />
         </div>
         <h2 className={styles.sectionTitle}>목차</h2>
         <dl className={styles.contents}>
@@ -242,8 +246,8 @@ export default function PortfolioPdfPage() {
           <p className={styles.lead}>제조 업무 규칙 정의부터 PRD, ERD, DB 설계, Spring 구현, 검증과 배포까지 직접 수행한 개인 MES 프로젝트입니다.</p>
           <p className={styles.stack}>{miniMes.stack.join(" · ")}</p>
         </div>
-        <EvidenceImage image={dashboard} alt="사이드바, 작업지시 상태, 생산·품질 지표가 보이는 Mini MES 대시보드"
-          crop={{ y: 0, height: 1025 }} caption="공개 Demo 대시보드 · 작업지시 상태와 누적 생산·품질검사 현황" />
+        <EvidenceImage image={dashboard} alt="사이드바와 작업지시·생산 지표, 일별 생산 및 품질검사 차트가 보이는 Mini MES 대시보드"
+          crop={{ y: 0, height: 1018 }} caption="공개 Demo 대시보드 · 작업지시 상태, 일별 생산실적, 누적 품질검사 결과" />
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>End-to-End Ownership</h3>
           <Flow steps={["PRD", "Business Rules", "ERD", "DB Design", "Backend", "UI", "Verification", "Deploy"]} />
@@ -261,9 +265,9 @@ export default function PortfolioPdfPage() {
         summary="작업지시부터 실제 자재 사용량과 완제품 LOT의 검사 이력까지 연결한 화면입니다.">
         <section className={styles.productEvidence}>
           <h3><span>01</span> Production Overview</h3>
-          <EvidenceImage image={dashboard} alt="작업지시 상태별 건수와 누적 생산수량·양품·불량"
-            crop={{ x: 278, y: 236, width: 1290, height: 376 }}
-            caption="대시보드에서 작업지시 상태별 건수와 생산량을 조회하고 품질검사 현황으로 이어집니다." />
+          <EvidenceImage image={dashboard} alt="일별 양품·불량 누적 생산량 막대 차트와 품질검사 합격·불합격 비율 도넛 차트"
+            crop={{ x: 286, y: 700, width: 1260, height: 321 }}
+            caption="일별 양품·불량 생산량과 누적 품질검사 합격·불합격을 차트로 확인합니다." />
         </section>
         <section className={styles.productEvidence}>
           <h3><span>02</span> Material Traceability</h3>
